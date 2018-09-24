@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lore", "Consogue\Lore.csproj", "{CCC4C75A-D0A5-4D16-874C-AE004C85E36D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CCC4C75A-D0A5-4D16-874C-AE004C85E36D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCC4C75A-D0A5-4D16-874C-AE004C85E36D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCC4C75A-D0A5-4D16-874C-AE004C85E36D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCC4C75A-D0A5-4D16-874C-AE004C85E36D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1CFD50AF-B025-426F-B399-99C08C146CFC}
+	EndGlobalSection
+EndGlobal
