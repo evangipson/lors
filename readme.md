@@ -21,7 +21,7 @@ The user will open the game, and create a hero. The player will then interact wi
 * RogueSharp for common roguelike libraries
 
 # Contributing
-Thank you so much for your interest in contributing to L.O.R.S.! Check out any [open issues](https://github.com/evangipson/lors/issues) to see if your feedback is already reported. If not, [create a new issue](https://github.com/evangipson/lors/issues/new), please!
+Thank you so much for your interest in contributing to L.O.R.S.! Check out any [open issues](https://github.com/evangipson/lors/issues) to see if your feedback is already reported. If not, [create a new issue](https://github.com/evangipson/lors/issues/new/choose), please!
 
 # License
 L.O.R.S. is licensed under [AGPL 3.0](https://www.gnu.org/licenses/agpl-3.0.en.html). If you are interested, [take a look at L.O.R.S.' license](LICENSE).
