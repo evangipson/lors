@@ -36,7 +36,7 @@ namespace Consogue
             Random = new DotNetRandom(seed);
             // The title will appear at the top of the console window 
             // also include the seed used to generate the level
-            string consoleTitle = $"RougeSharp V3 Tutorial - Level 1 - Seed {seed}";
+            string consoleTitle = $"L.O.R.S. - Level 1 - Seed {seed}";
             // Set up our RLRootConsole now that we have defaults
             console = new RLRootConsole(
                 fontFileName,
@@ -47,7 +47,8 @@ namespace Consogue
                 consoleTitle
             );
             // Initialize the sub consoles that we will Blit to the root console
-            mapConsole = new RLConsole(Dimensions.MapWidth, Dimensions.MapHeight);
+            // Note: mapConsole needs to be as big as the world, but we'll only render a section of it
+            mapConsole = new RLConsole(Dimensions.WorldWidth, Dimensions.WorldHeight);
             messageConsole = new RLConsole(Dimensions.MessageWidth, Dimensions.MessageHeight);
             statConsole = new RLConsole(Dimensions.StatWidth, Dimensions.StatHeight);
             inventoryConsole = new RLConsole(Dimensions.InventoryWidth, Dimensions.InventoryHeight);
@@ -60,8 +61,8 @@ namespace Consogue
             int maxRoomWidth = Random.Next(13, 22);
             int maxRoomHeight = Random.Next(8, 11);
             DungeonMap = new MapGenerator(
-                Dimensions.MapWidth,
-                Dimensions.MapHeight,
+                Dimensions.WorldWidth,
+                Dimensions.WorldHeight,
                 maxRooms,
                 maxRoomWidth,
                 maxRoomHeight
@@ -97,7 +98,8 @@ namespace Consogue
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private static void OnConsoleUpdate(object sender, UpdateEventArgs e)
-        {// Event handler for RLNET's Update event
+        {
+            // Event handler for RLNET's Update event
             bool didPlayerAct = false;
             RLKeyPress keyPress = console.Keyboard.GetKeyPress();
             if (CommandSystem.IsPlayerTurn)
@@ -188,14 +190,16 @@ namespace Consogue
                 statConsole.Clear();
                 messageConsole.Clear();
 
+                // Draw the map
                 DungeonMap.Draw(mapConsole, statConsole);
-
                 // Draw our player on the map subconsole
                 Player.Draw(mapConsole, DungeonMap);
                 // After we draw our player, draw our player's stats in the stats subconsole
                 Player.DrawStats(statConsole);
                 // Draw our message log
                 MessageLog.Draw(messageConsole);
+                // Refocus the camera
+                CameraSystem.RefocusCamera();
 
                 // Blit the sub consoles to the root console in the correct locations
                 RLConsole.Blit(
@@ -230,8 +234,8 @@ namespace Consogue
                 );
                 RLConsole.Blit(
                     mapConsole,
-                    0,
-                    0,
+                    CameraSystem.ViewportStartX,
+                    CameraSystem.ViewportStartY,
                     Dimensions.MapWidth,
                     Dimensions.MapHeight, 
                     console,

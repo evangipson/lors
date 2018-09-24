@@ -12,5 +12,8 @@
         public static readonly int StatHeight = 11;
         public static readonly int InventoryWidth = 20;
         public static readonly int InventoryHeight = 70;
+
+        public static readonly int WorldWidth = MapWidth * 2;
+        public static readonly int WorldHeight = MapHeight * 2;
     }
 }

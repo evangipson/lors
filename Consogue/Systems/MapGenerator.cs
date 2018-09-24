@@ -177,14 +177,16 @@ namespace Consogue.Systems
                 if (Dice.Roll("1D10") < 7)
                 {
                     // Generate between 1 and 4 monsters
-                    var numberOfMonsters = Dice.Roll("1D4");
+                    var numberOfMonsters = Dice.Roll("1D3");
                     for (int i = 0; i < numberOfMonsters; i++)
                     {
                         // Find a random walkable location in the room to place the monster
                         Point randomRoomLocation = _map.GetRandomWalkableLocationInRoom(room);
                         // It's possible that the room doesn't have space to place a monster
-                        // In that case skip creating the monster
-                        if (randomRoomLocation != null)
+                        // In that case skip creating the monster, and the default point that
+                        // GetRandomWalkableLocationInRoom() returns in 0, 0. A wall will be there,
+                        // so we know that means it's incorrect.
+                        if (randomRoomLocation.X != 0 && randomRoomLocation.Y != 0)
                         {
                             // Temporarily hard code this monster to be created at level 1
                             var monster = Kobold.Create(1);

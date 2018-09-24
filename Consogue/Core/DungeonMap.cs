@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using RLNET;
 using System.Linq;
+using Consogue.Systems;
 
 namespace Consogue.Core
 {
@@ -27,7 +28,7 @@ namespace Consogue.Core
         /// <param name="statConsole"></param>
         public void Draw(RLConsole mapConsole, RLConsole statConsole)
         {
-            foreach(Cell cell in GetAllCells())
+            foreach (Cell cell in GetAllCells())
             {
                 SetConsoleSymbolForCell(mapConsole, cell);
             }

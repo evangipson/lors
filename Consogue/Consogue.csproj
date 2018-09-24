@@ -84,6 +84,7 @@
     <Compile Include="Interfaces\ISchedulable.cs" />
     <Compile Include="Monsters\Kobold.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Systems\CameraSystem.cs" />
     <Compile Include="Systems\CommandSystem.cs" />
     <Compile Include="Systems\MapGenerator.cs" />
     <Compile Include="Systems\MessageLog.cs" />
