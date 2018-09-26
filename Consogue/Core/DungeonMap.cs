@@ -148,6 +148,23 @@ namespace Consogue.Core
             }
             return false;
         }
+        /// <summary>
+        /// Will place the player at the exit, in the last room. Used when
+        /// travelling back upstairs.
+        /// </summary>
+        public void PlacePlayerNearExit()
+        {
+            Game.SchedulingSystem.Clear();
+            Player player = Game.Player;
+            if (player == null)
+            {
+                player = new Player();
+            }
+
+            player.X = Rooms[Rooms.Count - 1].Center.X;
+            player.Y = Rooms[Rooms.Count - 1].Center.Y;
+            UpdatePlayerFieldOfView();
+        }
 
         /// <summary>
         /// A helper method for setting the IsWalkable property on a Cell.
@@ -288,6 +305,15 @@ namespace Consogue.Core
         {
             Player player = Game.Player;
             return StairsDown.X == player.X && StairsDown.Y == player.Y;
+        }
+        /// <summary>
+        /// Makes sure the Player is above upward stairs before moving up them.
+        /// </summary>
+        /// <returns></returns>
+        public bool CanMoveUpToPreviousLevel()
+        {
+            Player player = Game.Player;
+            return StairsUp.X == player.X && StairsUp.Y == player.Y;
         }
     }
 }

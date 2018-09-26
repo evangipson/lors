@@ -3,6 +3,7 @@ using Consogue.Systems;
 using RLNET;
 using RogueSharp.Random;
 using System;
+using System.Collections.Generic;
 
 namespace Consogue
 {
@@ -23,9 +24,15 @@ namespace Consogue
         private static RLConsole statConsole;
         private static RLConsole inventoryConsole;
 
-        public static DungeonMap DungeonMap { get; private set; }
+        private static List<DungeonMap> DungeonMaps = new List<DungeonMap>();
+        public static DungeonMap DungeonMap { get; private set; } // current map
         public static Player Player { get; set; }
         public static IRandom Random { get; private set; }
+        // Dimensions for our map
+        // TODO: Move into Dimensions if accessed in another file
+        private static int maxRooms = 0;
+        private static int maxRoomWidth = 0;
+        private static int maxRoomHeight = 0;
 
         public static void Main()
         {
@@ -58,10 +65,11 @@ namespace Consogue
             CommandSystem = new CommandSystem();
             // Start our scheduling system
             SchedulingSystem = new SchedulingSystem();
-            // Create our map
-            int maxRooms = Random.Next(17, 23);
-            int maxRoomWidth = Random.Next(13, 22);
-            int maxRoomHeight = Random.Next(8, 11);
+            // Now that Random is initialized w/ seed... create the random based variables
+            maxRooms = Random.Next(17, 23);
+            maxRoomWidth = Random.Next(13, 22);
+            maxRoomHeight = Random.Next(8, 11);
+            // Add the first DungeonMap to the list
             DungeonMap = new MapGenerator(
                 Dimensions.WorldWidth,
                 Dimensions.WorldHeight,
@@ -72,6 +80,7 @@ namespace Consogue
             ).CreateMap();
             // Now that we have player AND map, we can update player FOV
             DungeonMap.UpdatePlayerFieldOfView();
+            DungeonMaps.Add(DungeonMap);
             // Now make our console listen to our custom functions
             console.Update += OnConsoleUpdate;
             console.Render += OnConsoleRender;
@@ -109,75 +118,89 @@ namespace Consogue
             {
                 if (keyPress != null)
                 {
-                    switch (keyPress.Key)
+                    // User presses a direction
+                    if (keyPress.Key == RLKey.Keypad1)
                     {
-                        case RLKey.Keypad1:
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.DownLeft);
+                    }
+                    else if (keyPress.Key == RLKey.Down || keyPress.Key == RLKey.Keypad2)
+                    {
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
+                    }
+                    else if (keyPress.Key == RLKey.Keypad3)
+                    {
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.DownRight);
+                    }
+                    else if (keyPress.Key == RLKey.Left || keyPress.Key == RLKey.Keypad4)
+                    {
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
+                    }
+                    else if (keyPress.Key == RLKey.Right || keyPress.Key == RLKey.Keypad6)
+                    {
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
+                    }
+                    else if (keyPress.Key == RLKey.Keypad7)
+                    {
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.UpLeft);
+                    }
+                    else if (keyPress.Key == RLKey.Up || keyPress.Key == RLKey.Keypad8)
+                    {
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
+                    }
+                    else if (keyPress.Key == RLKey.Keypad9)
+                    {
+                        didPlayerAct = CommandSystem.MovePlayer(Direction.UpRight);
+                    }
+                    // User exits game
+                    else if (keyPress.Key == RLKey.Escape)
+                    {
+                        console.Close();
+                    }
+                    // User walks down stairs
+                    else if (keyPress.Key == RLKey.KeypadPeriod || keyPress.Key == RLKey.Period)
+                    {
+                        if (DungeonMap.CanMoveDownToNextLevel())
+                        {
+                            _mapLevel += 1;
+                            if (_mapLevel >= DungeonMaps.Count)
                             {
-                                didPlayerAct = CommandSystem.MovePlayer(Direction.DownLeft);
-                                break;
+                                MapGenerator mapGenerator = new MapGenerator(
+                                    Dimensions.WorldWidth,
+                                    Dimensions.WorldHeight,
+                                    maxRooms,
+                                    maxRoomWidth,
+                                    maxRoomHeight,
+                                    _mapLevel
+                                );
+                                DungeonMaps.Add(mapGenerator.CreateMap());
                             }
-                        case RLKey.Down:
-                        case RLKey.Keypad2:
+                            DungeonMap = DungeonMaps[_mapLevel - 1];
+                            MessageLog = new MessageLog();
+                            CommandSystem = new CommandSystem();
+                            console.Title = $"L.O.R.S. - Level {_mapLevel}";
+                            didPlayerAct = true;
+                        }
+                    }
+                    // User walks up stairs
+                    else if (keyPress.Key == RLKey.Comma || keyPress.Key == RLKey.Keypad0)
+                    {
+                        if (DungeonMap.CanMoveUpToPreviousLevel())
+                        {
+                            if (_mapLevel <= 1)
                             {
-                                didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
-                                break;
+                                MessageLog.Add("No overworld yet! Can't escape.");
                             }
-                        case RLKey.Keypad3:
+                            else
                             {
-                                didPlayerAct = CommandSystem.MovePlayer(Direction.DownRight);
-                                break;
+                                _mapLevel -= 1;
+                                MessageLog = new MessageLog();
+                                CommandSystem = new CommandSystem();
+                                console.Title = $"L.O.R.S. - Level {_mapLevel}";
+                                DungeonMap = DungeonMaps[_mapLevel - 1];
+                                DungeonMap.PlacePlayerNearExit();
+                                didPlayerAct = true;
                             }
-                        case RLKey.Keypad4:
-                        case RLKey.Left:
-                            {
-                                didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
-                                break;
-                            }
-                        case RLKey.Keypad6:
-                        case RLKey.Right:
-                            {
-                                didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
-                                break;
-                            }
-                        case RLKey.Keypad7:
-                            {
-                                didPlayerAct = CommandSystem.MovePlayer(Direction.UpLeft);
-                                break;
-                            }
-                        case RLKey.Keypad8:
-                        case RLKey.Up:
-                            {
-                                didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
-                                break;
-                            }
-                        case RLKey.Keypad9:
-                            {
-                                didPlayerAct = CommandSystem.MovePlayer(Direction.UpRight);
-                                break;
-                            }
-                        case RLKey.Escape:
-                            {
-                                console.Close();
-                                break;
-                            }
-                        case RLKey.Period:
-                        case RLKey.KeypadPeriod:
-                            {
-                                if (DungeonMap.CanMoveDownToNextLevel())
-                                {
-                                    MapGenerator mapGenerator = new MapGenerator(Dimensions.MapWidth, Dimensions.MapHeight, 20, 13, 7, ++_mapLevel);
-                                    DungeonMap = mapGenerator.CreateMap();
-                                    MessageLog = new MessageLog();
-                                    CommandSystem = new CommandSystem();
-                                    console.Title = $"L.O.R.S. - Level {_mapLevel}";
-                                    didPlayerAct = true;
-                                }
-                                break;
-                            }
-                        default:
-                            {
-                                break;
-                            }
+                        }
                     }
                 }
                 if (didPlayerAct)
