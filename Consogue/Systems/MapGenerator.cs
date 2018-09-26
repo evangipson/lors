@@ -28,7 +28,7 @@ namespace Consogue.Systems
         /// <param name="roomMaxSize"></param>
         /// <param name="roomMinSize"></param>
         public MapGenerator(int width, int height,
-        int maxRooms, int roomMaxSize, int roomMinSize)
+        int maxRooms, int roomMaxSize, int roomMinSize, int mapLevel)
         {
             _width = width;
             _height = height;
@@ -104,6 +104,9 @@ namespace Consogue.Systems
             {
                 CreateDoors(room);
             }
+
+            // Now add the stairs before placing the Player
+            CreateStairs();
 
             // Now that our rooms and hallways are done, place the player in the middle
             // of the first room
@@ -277,6 +280,27 @@ namespace Consogue.Systems
                 return true;
             }
             return false;
+        }
+        /// <summary>
+        /// We are creating the stairs up in the center of the first room that was generated.
+        /// This is the same room that the player starts in and the player is also in the center of the room,
+        /// so we’ll offset the X coordinate by 1 to put the stairs next to the player.
+        /// The last room we generated gets stairs going down and again we place them in the center of the room.
+        /// </summary>
+        private void CreateStairs()
+        {
+            _map.StairsUp = new Stairs
+            {
+                X = _map.Rooms.First().Center.X + 1,
+                Y = _map.Rooms.First().Center.Y,
+                IsUp = true
+            };
+            _map.StairsDown = new Stairs
+            {
+                X = _map.Rooms.Last().Center.X,
+                Y = _map.Rooms.Last().Center.Y,
+                IsUp = false
+            };
         }
     }
 }

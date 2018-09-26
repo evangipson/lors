@@ -79,6 +79,7 @@
     <Compile Include="Core\Colors.cs" />
     <Compile Include="Core\Monster.cs" />
     <Compile Include="Core\Player.cs" />
+    <Compile Include="Core\Stairs.cs" />
     <Compile Include="Interfaces\IActor.cs" />
     <Compile Include="Interfaces\IBehavior.cs" />
     <Compile Include="Interfaces\IDrawable.cs" />

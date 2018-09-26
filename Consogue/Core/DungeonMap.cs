@@ -13,12 +13,18 @@ namespace Consogue.Core
         private readonly List<Monster> monsters;
         public List<Rectangle> Rooms { get; set; }
         public List<Door> Doors { get; set; }
+        public Stairs StairsUp { get; set; }
+        public Stairs StairsDown { get; set; }
         /// <summary>
         /// When a DungeonMap is created, a list of Rooms,
         /// Monsters, and Doors comes with it.
         /// </summary>
         public DungeonMap()
         {
+            // When we make a new level by going down stairs we want to make sure that
+            // all of the monsters from the previous level are removed from the schedule
+            // and do not continue to try to act.
+            Game.SchedulingSystem.Clear();
             Rooms = new List<Rectangle>();
             monsters = new List<Monster>();
             Doors = new List<Door>();
@@ -41,6 +47,9 @@ namespace Consogue.Core
             {
                 door.Draw(mapConsole, this);
             }
+            // Add one stairs up and one stairs down per level.
+            StairsUp.Draw(mapConsole, this);
+            StairsDown.Draw(mapConsole, this);
 
             // Keep an index so we know which position to draw monster stats at
             int i = 0;
@@ -270,6 +279,15 @@ namespace Consogue.Core
 
                 Game.MessageLog.Add($"{actor.Name} opened a door");
             }
+        }
+        /// <summary>
+        /// Makes sure the Player is above stairs before moving down them.
+        /// </summary>
+        /// <returns></returns>
+        public bool CanMoveDownToNextLevel()
+        {
+            Player player = Game.Player;
+            return StairsDown.X == player.X && StairsDown.Y == player.Y;
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Consogue
     class Game
     {
         private static bool _renderRequired = true;
+        private static int _mapLevel = 1;
         public static CommandSystem CommandSystem { get; private set; }
         public static MessageLog MessageLog { get; private set; }
         public static SchedulingSystem SchedulingSystem { get; private set; }
@@ -35,8 +36,9 @@ namespace Consogue
             int seed = (int)DateTime.UtcNow.Ticks;
             Random = new DotNetRandom(seed);
             // The title will appear at the top of the console window 
-            // also include the seed used to generate the level
-            string consoleTitle = $"L.O.R.S. - Level 1 - Seed {seed}";
+            // also include the seed used to generate the level as well
+            // as the level itself.
+            string consoleTitle = $"L.O.R.S. - - Level {_mapLevel} - Seed {seed}"; 
             // Set up our RLRootConsole now that we have defaults
             console = new RLRootConsole(
                 fontFileName,
@@ -65,7 +67,8 @@ namespace Consogue
                 Dimensions.WorldHeight,
                 maxRooms,
                 maxRoomWidth,
-                maxRoomHeight
+                maxRoomHeight,
+                _mapLevel
             ).CreateMap();
             // Now that we have player AND map, we can update player FOV
             DungeonMap.UpdatePlayerFieldOfView();
@@ -155,6 +158,20 @@ namespace Consogue
                         case RLKey.Escape:
                             {
                                 console.Close();
+                                break;
+                            }
+                        case RLKey.Period:
+                        case RLKey.KeypadPeriod:
+                            {
+                                if (DungeonMap.CanMoveDownToNextLevel())
+                                {
+                                    MapGenerator mapGenerator = new MapGenerator(Dimensions.MapWidth, Dimensions.MapHeight, 20, 13, 7, ++_mapLevel);
+                                    DungeonMap = mapGenerator.CreateMap();
+                                    MessageLog = new MessageLog();
+                                    CommandSystem = new CommandSystem();
+                                    console.Title = $"L.O.R.S. - Level {_mapLevel}";
+                                    didPlayerAct = true;
+                                }
                                 break;
                             }
                         default:
