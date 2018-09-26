@@ -62,5 +62,10 @@ namespace Consogue.Core
         public static RLColor Player = DbLight;
         public static RLColor Text = DbLight;
         public static RLColor Gold = DbSun;
+
+        public static RLColor DoorBackground = ComplimentDarkest;
+        public static RLColor Door = ComplimentLighter;
+        public static RLColor DoorBackgroundFov = ComplimentDarker;
+        public static RLColor DoorFov = ComplimentLightest;
     }
 }

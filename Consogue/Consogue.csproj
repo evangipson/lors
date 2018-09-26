@@ -73,6 +73,7 @@
     <Compile Include="Core\Actor.cs" />
     <Compile Include="Core\Dimensions.cs" />
     <Compile Include="Core\Direction.cs" />
+    <Compile Include="Core\Door.cs" />
     <Compile Include="Core\DungeonMap.cs" />
     <Compile Include="Core\Game.cs" />
     <Compile Include="Core\Colors.cs" />

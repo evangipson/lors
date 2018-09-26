@@ -3,6 +3,7 @@ using Consogue.Monsters;
 using RogueSharp;
 using RogueSharp.DiceNotation;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Consogue.Systems
@@ -68,8 +69,8 @@ namespace Consogue.Systems
                     _map.Rooms.Add(newRoom);
                 }
             }
-            // Iterate through each room that we wanted placed 
-            // call CreateRoom to make it
+            // Iterate through each room that we wanted placed
+            // and dig out the rooms.
             foreach (Rectangle room in _map.Rooms)
             {
                 CreateRoom(room);
@@ -96,6 +97,12 @@ namespace Consogue.Systems
                     CreateVerticalTunnel(previousRoomCenterY, currentRoomCenterY, previousRoomCenterX);
                     CreateHorizontalTunnel(previousRoomCenterX, currentRoomCenterX, currentRoomCenterY);
                 }
+            }
+
+            // Now that we've placed the tunnels, we can draw the doors.
+            foreach(Rectangle room in _map.Rooms)
+            {
+                CreateDoors(room);
             }
 
             // Now that our rooms and hallways are done, place the player in the middle
@@ -197,6 +204,79 @@ namespace Consogue.Systems
                     }
                 }
             }
+        }
+        private void CreateDoors(Rectangle room)
+        {
+            // The the boundries of the room
+            int xMin = room.Left;
+            int xMax = room.Right;
+            int yMin = room.Top;
+            int yMax = room.Bottom;
+
+            // Put the rooms border cells into a list
+            var borderCells = (_map.GetCellsAlongLine(xMin, yMin, xMax, yMin)).ToList();
+            borderCells.AddRange(_map.GetCellsAlongLine(xMin, yMin, xMin, yMax));
+            borderCells.AddRange(_map.GetCellsAlongLine(xMin, yMax, xMax, yMax));
+            borderCells.AddRange(_map.GetCellsAlongLine(xMax, yMin, xMax, yMax));
+
+            // Go through each of the rooms border cells and look for locations to place doors.
+            foreach (var cell in borderCells)
+            {
+                if (IsPotentialDoor(cell))
+                {
+                    // A door must block field-of-view when it is closed.
+                    _map.SetCellProperties(cell.X, cell.Y, false, true);
+                    _map.Doors.Add(new Door
+                    {
+                        X = cell.X,
+                        Y = cell.Y,
+                        IsOpen = false
+                    });
+                }
+            }
+        }
+        /// <summary>
+        /// Checks to see if a cell is a good candidate for placement of a door
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <returns></returns>
+        private bool IsPotentialDoor(ICell cell)
+        {
+            // If the cell is not walkable
+            // then it is a wall and not a good place for a door
+            if (!cell.IsWalkable)
+            {
+                return false;
+            }
+
+            // Store references to all of the neighboring cells 
+            ICell right = _map.GetCell(cell.X + 1, cell.Y);
+            ICell left = _map.GetCell(cell.X - 1, cell.Y);
+            ICell top = _map.GetCell(cell.X, cell.Y - 1);
+            ICell bottom = _map.GetCell(cell.X, cell.Y + 1);
+
+            // Make sure there is not already a door here
+            if (_map.GetDoor(cell.X, cell.Y) != null ||
+                _map.GetDoor(right.X, right.Y) != null ||
+                _map.GetDoor(left.X, left.Y) != null ||
+                _map.GetDoor(top.X, top.Y) != null ||
+                _map.GetDoor(bottom.X, bottom.Y) != null)
+            {
+                return false;
+            }
+
+            // This is a good place for a door on the left or right side of the room
+            if (right.IsWalkable && left.IsWalkable && !top.IsWalkable && !bottom.IsWalkable)
+            {
+                return true;
+            }
+
+            // This is a good place for a door on the top or bottom of the room
+            if (!right.IsWalkable && !left.IsWalkable && top.IsWalkable && bottom.IsWalkable)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -11,17 +11,23 @@ namespace Consogue.Core
     public class DungeonMap : Map
     {
         private readonly List<Monster> monsters;
-        public List<Rectangle> Rooms;
+        public List<Rectangle> Rooms { get; set; }
+        public List<Door> Doors { get; set; }
+        /// <summary>
+        /// When a DungeonMap is created, a list of Rooms,
+        /// Monsters, and Doors comes with it.
+        /// </summary>
         public DungeonMap()
         {
-            // Initialize the list of rooms when we create a new DungeonMap
             Rooms = new List<Rectangle>();
             monsters = new List<Monster>();
+            Doors = new List<Door>();
         }
 
         /// <summary>
         /// This method will be called each time the map is updated.
-        /// It will render all of the symbols/colors for each cell to the map subconsole.
+        /// It will render all of the symbols/colors for each cell to the map subconsole,
+        /// as well as draw all the monsters and doors.
         /// </summary>
         /// <param name="mapConsole"></param>
         /// <param name="statConsole"></param>
@@ -30,6 +36,10 @@ namespace Consogue.Core
             foreach (Cell cell in GetAllCells())
             {
                 SetConsoleSymbolForCell(mapConsole, cell);
+            }
+            foreach (Door door in Doors)
+            {
+                door.Draw(mapConsole, this);
             }
 
             // Keep an index so we know which position to draw monster stats at
@@ -118,6 +128,8 @@ namespace Consogue.Core
                 actor.Y = y;
                 // The new cell the actor is on is now not walkable
                 SetIsWalkable(actor.X, actor.Y, false);
+                // Try to open a door if one exists here
+                OpenDoor(actor, x, y);
                 // Don't forget to update the field of view if we just repositioned the player
                 if (actor is Player)
                 {
@@ -229,6 +241,35 @@ namespace Consogue.Core
             }
 
             return Point;
+        }
+        /// <summary>
+        /// Return the door at the x,y position or null if one is not found.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public Door GetDoor(int x, int y)
+        {
+            return Doors.SingleOrDefault(d => d.X == x && d.Y == y);
+        }
+        /// <summary>
+        /// The actor opens the door located at the x,y position
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        private void OpenDoor(Actor actor, int x, int y)
+        {
+            Door door = GetDoor(x, y);
+            if (door != null && !door.IsOpen)
+            {
+                door.IsOpen = true;
+                var cell = GetCell(x, y);
+                // Once the door is opened it should be marked as transparent and no longer block field-of-view
+                SetCellProperties(x, y, true, cell.IsWalkable, cell.IsExplored);
+
+                Game.MessageLog.Add($"{actor.Name} opened a door");
+            }
         }
     }
 }
