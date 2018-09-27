@@ -117,7 +117,6 @@ namespace Consogue.Systems
 
             return _map;
         }
-
         /// <summary>
         /// Given a rectangular area on the map,
         /// set the cell properties for that area to true.

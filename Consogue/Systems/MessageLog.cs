@@ -10,7 +10,7 @@ namespace Consogue.Systems
         // shown will also be the first removed.
         private readonly Queue<string> lines;
         // How many lines can be shown in the message log at once
-        private static readonly int maxLines = 15;
+        private static readonly int maxLines = 7;
 
         public MessageLog()
         {

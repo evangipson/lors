@@ -38,7 +38,7 @@ namespace Consogue
         {
             string fontFileName = "terminal8x8.png";
             int fontSize = 8;
-            float scale = 1f;
+            float scale = 1.5f;
             // Establish the seed for the random number generator from the current time
             int seed = (int)DateTime.UtcNow.Ticks;
             Random = new DotNetRandom(seed);
@@ -162,7 +162,7 @@ namespace Consogue
                         if (DungeonMap.CanMoveDownToNextLevel())
                         {
                             _mapLevel += 1;
-                            if (_mapLevel >= DungeonMaps.Count)
+                            if (_mapLevel > DungeonMaps.Count)
                             {
                                 MapGenerator mapGenerator = new MapGenerator(
                                     Dimensions.WorldWidth,
@@ -173,8 +173,14 @@ namespace Consogue
                                     _mapLevel
                                 );
                                 DungeonMaps.Add(mapGenerator.CreateMap());
+                                DungeonMap = DungeonMaps[_mapLevel - 1];
                             }
-                            DungeonMap = DungeonMaps[_mapLevel - 1];
+                            else
+                            {
+                                DungeonMap = DungeonMaps[_mapLevel - 1];
+                                DungeonMap.PlacePlayerNearEntrance();
+                                DungeonMap.RescheduleExistingActors();
+                            }
                             MessageLog = new MessageLog();
                             CommandSystem = new CommandSystem();
                             console.Title = $"L.O.R.S. - Level {_mapLevel}";
@@ -198,6 +204,7 @@ namespace Consogue
                                 console.Title = $"L.O.R.S. - Level {_mapLevel}";
                                 DungeonMap = DungeonMaps[_mapLevel - 1];
                                 DungeonMap.PlacePlayerNearExit();
+                                DungeonMap.RescheduleExistingActors();
                                 didPlayerAct = true;
                             }
                         }

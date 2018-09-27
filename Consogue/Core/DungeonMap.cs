@@ -154,16 +154,35 @@ namespace Consogue.Core
         /// </summary>
         public void PlacePlayerNearExit()
         {
-            Game.SchedulingSystem.Clear();
             Player player = Game.Player;
-            if (player == null)
-            {
-                player = new Player();
-            }
 
             player.X = Rooms[Rooms.Count - 1].Center.X;
             player.Y = Rooms[Rooms.Count - 1].Center.Y;
             UpdatePlayerFieldOfView();
+        }
+        /// <summary>
+        /// Used to place the player near the entrance when
+        /// entering a level you've already been to.
+        /// </summary>
+        public void PlacePlayerNearEntrance()
+        {
+            Player player = Game.Player;
+
+            player.X = Rooms[0].Center.X;
+            player.Y = Rooms[0].Center.Y;
+            UpdatePlayerFieldOfView();
+        }
+        public void RescheduleExistingActors()
+        {
+            Game.SchedulingSystem.Clear();
+            Game.SchedulingSystem.Add(Game.Player);
+            foreach (Monster monster in monsters)
+            {
+                Game.SchedulingSystem.Add(monster);
+            }
+            // for some reason, stairs aren't walkable after you do this. oh well.
+            SetIsWalkable(StairsUp.X, StairsUp.Y, true);
+            SetIsWalkable(StairsDown.X, StairsDown.Y, true);
         }
 
         /// <summary>
