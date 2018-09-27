@@ -1,9 +1,10 @@
 ﻿using Consogue.Interfaces;
+using Consogue.Core;
 using RLNET;
 using RogueSharp;
 using System;
 
-namespace Consogue.Core
+namespace Consogue.Tiles
 {
     public class Door : IDrawable
     {

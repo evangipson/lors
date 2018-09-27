@@ -1,4 +1,5 @@
 ﻿using RogueSharp;
+using Consogue.Tiles;
 using System.Collections.Generic;
 using RLNET;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace Consogue.Core
         private readonly List<Monster> monsters;
         public List<Rectangle> Rooms { get; set; }
         public List<Door> Doors { get; set; }
+        public List<Plant> Plants = new List<Plant>();
         public Stairs StairsUp { get; set; }
         public Stairs StairsDown { get; set; }
         /// <summary>
@@ -47,8 +49,12 @@ namespace Consogue.Core
             {
                 door.Draw(mapConsole, this);
             }
+            foreach (Plant plant in Plants)
+            {
+                plant.Draw(mapConsole, this);
+            }
             // Add one stairs up and one stairs down per level.
-            if(StairsUp != null) // we don't have stairs in the overworld
+            if (StairsUp != null) // we don't have stairs in the overworld
             {
                 StairsUp.Draw(mapConsole, this);
             }

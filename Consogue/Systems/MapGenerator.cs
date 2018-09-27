@@ -1,5 +1,6 @@
 ﻿using Consogue.Core;
 using Consogue.Monsters;
+using Consogue.Tiles;
 using RogueSharp;
 using RogueSharp.DiceNotation;
 using System;
@@ -53,7 +54,12 @@ namespace Consogue.Systems
                 // As long as we aren't on the border....
                 if(cell.X != 0 && cell.Y != 0 && cell.X != _width - 1 && cell.Y != _height - 1)
                 {
+                    // Plant some grass
                     _map.SetCellProperties(cell.X, cell.Y, true, true, false);
+                    _map.Plants.Add(new Grass(
+                        cell.X,
+                        cell.Y
+                    ));
                 }
             }
 

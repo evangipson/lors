@@ -73,13 +73,15 @@
     <Compile Include="Core\Actor.cs" />
     <Compile Include="Core\Dimensions.cs" />
     <Compile Include="Core\Direction.cs" />
-    <Compile Include="Core\Door.cs" />
+    <Compile Include="Core\Plant.cs" />
+    <Compile Include="Tiles\Door.cs" />
     <Compile Include="Core\DungeonMap.cs" />
     <Compile Include="Core\Game.cs" />
     <Compile Include="Core\Colors.cs" />
     <Compile Include="Core\Monster.cs" />
     <Compile Include="Core\Player.cs" />
-    <Compile Include="Core\Stairs.cs" />
+    <Compile Include="Tiles\Grass.cs" />
+    <Compile Include="Tiles\Stairs.cs" />
     <Compile Include="Interfaces\IActor.cs" />
     <Compile Include="Interfaces\IBehavior.cs" />
     <Compile Include="Interfaces\IDrawable.cs" />

@@ -1,13 +1,8 @@
 ﻿using Consogue.Interfaces;
+using Consogue.Core;
 using RLNET;
 using RogueSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Consogue.Core
+namespace Consogue.Tiles
 {
     public class Stairs : IDrawable
     {
