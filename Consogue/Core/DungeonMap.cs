@@ -48,7 +48,10 @@ namespace Consogue.Core
                 door.Draw(mapConsole, this);
             }
             // Add one stairs up and one stairs down per level.
-            StairsUp.Draw(mapConsole, this);
+            if(StairsUp != null) // we don't have stairs in the overworld
+            {
+                StairsUp.Draw(mapConsole, this);
+            }
             StairsDown.Draw(mapConsole, this);
 
             // Keep an index so we know which position to draw monster stats at
@@ -181,7 +184,10 @@ namespace Consogue.Core
                 Game.SchedulingSystem.Add(monster);
             }
             // for some reason, stairs aren't walkable after you do this. oh well.
-            SetIsWalkable(StairsUp.X, StairsUp.Y, true);
+            if (StairsUp != null) // no stars up in the overworld
+            {
+                SetIsWalkable(StairsUp.X, StairsUp.Y, true);
+            }
             SetIsWalkable(StairsDown.X, StairsDown.Y, true);
         }
 

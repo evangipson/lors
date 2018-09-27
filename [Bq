@@ -1,0 +1,147 @@
+[1mdiff --git a/Consogue/Core/DungeonMap.cs b/Consogue/Core/DungeonMap.cs[m
+[1mindex 0d6af53..049f6c1 100644[m
+[1m--- a/Consogue/Core/DungeonMap.cs[m
+[1m+++ b/Consogue/Core/DungeonMap.cs[m
+[36m@@ -48,7 +48,10 @@[m [mnamespace Consogue.Core[m
+                 door.Draw(mapConsole, this);[m
+             }[m
+             // Add one stairs up and one stairs down per level.[m
+[31m-            StairsUp.Draw(mapConsole, this);[m
+[32m+[m[32m            if(StairsUp != null) // we don't have stairs in the overworld[m
+[32m+[m[32m            {[m
+[32m+[m[32m                StairsUp.Draw(mapConsole, this);[m
+[32m+[m[32m            }[m
+             StairsDown.Draw(mapConsole, this);[m
+ [m
+             // Keep an index so we know which position to draw monster stats at[m
+[36m@@ -181,7 +184,10 @@[m [mnamespace Consogue.Core[m
+                 Game.SchedulingSystem.Add(monster);[m
+             }[m
+             // for some reason, stairs aren't walkable after you do this. oh well.[m
+[31m-            SetIsWalkable(StairsUp.X, StairsUp.Y, true);[m
+[32m+[m[32m            if (StairsUp != null) // no stars up in the overworld[m
+[32m+[m[32m            {[m
+[32m+[m[32m                SetIsWalkable(StairsUp.X, StairsUp.Y, true);[m
+[32m+[m[32m            }[m
+             SetIsWalkable(StairsDown.X, StairsDown.Y, true);[m
+         }[m
+ [m
+[1mdiff --git a/Consogue/Core/Game.cs b/Consogue/Core/Game.cs[m
+[1mindex 00ec2ee..becc4a4 100644[m
+[1m--- a/Consogue/Core/Game.cs[m
+[1m+++ b/Consogue/Core/Game.cs[m
+[36m@@ -66,10 +66,10 @@[m [mnamespace Consogue[m
+             // Start our scheduling system[m
+             SchedulingSystem = new SchedulingSystem();[m
+             // Now that Random is initialized w/ seed... create the random based variables[m
+[31m-            maxRooms = Random.Next(17, 23);[m
+[32m+[m[32m            maxRooms = Random.Next(10, 15);[m
+             maxRoomWidth = Random.Next(13, 22);[m
+             maxRoomHeight = Random.Next(8, 11);[m
+[31m-            // Add the first DungeonMap to the list[m
+[32m+[m[32m            // Add the first DungeonMap to the list: the overworld.[m
+             DungeonMap = new MapGenerator([m
+                 Dimensions.WorldWidth,[m
+                 Dimensions.WorldHeight,[m
+[36m@@ -77,7 +77,7 @@[m [mnamespace Consogue[m
+                 maxRoomWidth,[m
+                 maxRoomHeight,[m
+                 _mapLevel[m
+[31m-            ).CreateMap();[m
+[32m+[m[32m            ).CreateWorld();[m
+             // Now that we have player AND map, we can update player FOV[m
+             DungeonMap.UpdatePlayerFieldOfView();[m
+             DungeonMaps.Add(DungeonMap);[m
+[1mdiff --git a/Consogue/Systems/MapGenerator.cs b/Consogue/Systems/MapGenerator.cs[m
+[1mindex 316251d..78478a8 100644[m
+[1m--- a/Consogue/Systems/MapGenerator.cs[m
+[1m+++ b/Consogue/Systems/MapGenerator.cs[m
+[36m@@ -38,6 +38,68 @@[m [mnamespace Consogue.Systems[m
+             _map = new DungeonMap();[m
+         }[m
+ [m
+[32m+[m[32m        /// <summary>[m
+[32m+[m[32m        /// Creates the overworld and places a town in it[m
+[32m+[m[32m        /// </summary>[m
+[32m+[m[32m        /// <returns></returns>[m
+[32m+[m[32m        public DungeonMap CreateWorld()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            // Set the properties of all cells to false[m
+[32m+[m[32m            _map.Initialize(_width, _height);[m
+[32m+[m
+[32m+[m[32m            // Make every tile a grass tile, walls around the edges[m
+[32m+[m[32m            foreach(Cell cell in _map.GetAllCells())[m
+[32m+[m[32m            {[m
+[32m+[m[32m                // As long as we aren't on the border....[m
+[32m+[m[32m                if(cell.X != 0 && cell.Y != 0 && cell.X != _width - 1 && cell.Y != _height - 1)[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    _map.SetCellProperties(cell.X, cell.Y, true, true, false);[m
+[32m+[m[32m                }[m
+[32m+[m[32m            }[m
+[32m+[m
+[32m+[m[32m            // Try to place as many rooms as the specified maxRooms[m
+[32m+[m[32m            // Note: Only using decrementing loop because of WordPress formatting[m
+[32m+[m[32m            for (int r = _maxRooms; r > 0; r--)[m
+[32m+[m[32m            {[m
+[32m+[m[32m                // Determine the size and position of the room randomly[m
+[32m+[m[32m                int roomWidth = Game.Random.Next(_roomMinSize, _roomMaxSize);[m
+[32m+[m[32m                int roomHeight = Game.Random.Next(_roomMinSize, _roomMaxSize);[m
+[32m+[m[32m                int roomXPosition = Game.Random.Next(0, _width - roomWidth - 1);[m
+[32m+[m[32m                int roomYPosition = Game.Random.Next(0, _height - roomHeight - 1);[m
+[32m+[m
+[32m+[m[32m                // All of our rooms can be represented as Rectangles[m
+[32m+[m[32m                var newRoom = new Rectangle(roomXPosition, roomYPosition,[m
+[32m+[m[32m                  roomWidth, roomHeight);[m
+[32m+[m
+[32m+[m[32m                // Check to see if the room rectangle intersects with any other rooms[m
+[32m+[m[32m                bool newRoomIntersects = _map.Rooms.Any(room => newRoom.Intersects(room));[m
+[32m+[m
+[32m+[m[32m                // As long as it doesn't intersect add it to the list of rooms[m
+[32m+[m[32m                if (!newRoomIntersects)[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    _map.Rooms.Add(newRoom);[m
+[32m+[m[32m                }[m
+[32m+[m[32m            }[m
+[32m+[m[32m            // Iterate through each room that we wanted placed[m
+[32m+[m[32m            // and dig out the rooms.[m
+[32m+[m[32m            foreach (Rectangle room in _map.Rooms)[m
+[32m+[m[32m            {[m
+[32m+[m[32m                CreateRoom(room);[m
+[32m+[m[32m            }[m
+[32m+[m
+[32m+[m[32m            // Now add the stairs- only down- before we add the player[m
+[32m+[m[32m            CreateDownStairs();[m
+[32m+[m
+[32m+[m[32m            // Now that our rooms and hallways are done, place the player in the middle[m
+[32m+[m[32m            // of the first room[m
+[32m+[m[32m            PlacePlayer();[m
+[32m+[m
+[32m+[m[32m            // Now that the player is placed, place the monsters![m
+[32m+[m[32m            PlaceMonsters();[m
+[32m+[m
+[32m+[m[32m            return _map;[m
+[32m+[m[32m        }[m
+[32m+[m
+         /// <summary>[m
+         /// Generate a new map that places rooms randomly[m
+         /// </summary>[m
+[36m@@ -301,5 +363,19 @@[m [mnamespace Consogue.Systems[m
+                 IsUp = false[m
+             };[m
+         }[m
+[32m+[m[32m        /// <summary>[m
+[32m+[m[32m        /// Intended to be used only by CreateWorld(), because dungeons always[m
+[32m+[m[32m        /// have a stairs up AND stairs down, so you should use CreateStairs().[m
+[32m+[m[32m        /// </summary>[m
+[32m+[m[32m        private void CreateDownStairs()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            _map.StairsDown = new Stairs[m
+[32m+[m[32m            {[m
+[32m+[m[32m                // TODO: Make this a random point in the town perhaps?? Center of all rooms?[m
+[32m+[m[32m                X = _map.Rooms.Last().Center.X,[m
+[32m+[m[32m                Y = _map.Rooms.Last().Center.Y,[m
+[32m+[m[32m                IsUp = false[m
+[32m+[m[32m            };[m
+[32m+[m[32m        }[m
+     }[m
+ }[m

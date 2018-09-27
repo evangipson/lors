@@ -66,10 +66,10 @@ namespace Consogue
             // Start our scheduling system
             SchedulingSystem = new SchedulingSystem();
             // Now that Random is initialized w/ seed... create the random based variables
-            maxRooms = Random.Next(17, 23);
+            maxRooms = Random.Next(10, 15);
             maxRoomWidth = Random.Next(13, 22);
             maxRoomHeight = Random.Next(8, 11);
-            // Add the first DungeonMap to the list
+            // Add the first DungeonMap to the list: the overworld.
             DungeonMap = new MapGenerator(
                 Dimensions.WorldWidth,
                 Dimensions.WorldHeight,
@@ -77,7 +77,7 @@ namespace Consogue
                 maxRoomWidth,
                 maxRoomHeight,
                 _mapLevel
-            ).CreateMap();
+            ).CreateWorld();
             // Now that we have player AND map, we can update player FOV
             DungeonMap.UpdatePlayerFieldOfView();
             DungeonMaps.Add(DungeonMap);

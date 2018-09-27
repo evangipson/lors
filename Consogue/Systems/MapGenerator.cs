@@ -39,6 +39,68 @@ namespace Consogue.Systems
         }
 
         /// <summary>
+        /// Creates the overworld and places a town in it
+        /// </summary>
+        /// <returns></returns>
+        public DungeonMap CreateWorld()
+        {
+            // Set the properties of all cells to false
+            _map.Initialize(_width, _height);
+
+            // Make every tile a grass tile, walls around the edges
+            foreach(Cell cell in _map.GetAllCells())
+            {
+                // As long as we aren't on the border....
+                if(cell.X != 0 && cell.Y != 0 && cell.X != _width - 1 && cell.Y != _height - 1)
+                {
+                    _map.SetCellProperties(cell.X, cell.Y, true, true, false);
+                }
+            }
+
+            // Try to place as many rooms as the specified maxRooms
+            // Note: Only using decrementing loop because of WordPress formatting
+            for (int r = _maxRooms; r > 0; r--)
+            {
+                // Determine the size and position of the room randomly
+                int roomWidth = Game.Random.Next(_roomMinSize, _roomMaxSize);
+                int roomHeight = Game.Random.Next(_roomMinSize, _roomMaxSize);
+                int roomXPosition = Game.Random.Next(0, _width - roomWidth - 1);
+                int roomYPosition = Game.Random.Next(0, _height - roomHeight - 1);
+
+                // All of our rooms can be represented as Rectangles
+                var newRoom = new Rectangle(roomXPosition, roomYPosition,
+                  roomWidth, roomHeight);
+
+                // Check to see if the room rectangle intersects with any other rooms
+                bool newRoomIntersects = _map.Rooms.Any(room => newRoom.Intersects(room));
+
+                // As long as it doesn't intersect add it to the list of rooms
+                if (!newRoomIntersects)
+                {
+                    _map.Rooms.Add(newRoom);
+                }
+            }
+            // Iterate through each room that we wanted placed
+            // and dig out the rooms.
+            foreach (Rectangle room in _map.Rooms)
+            {
+                CreateRoom(room);
+            }
+
+            // Now add the stairs- only down- before we add the player
+            CreateDownStairs();
+
+            // Now that our rooms and hallways are done, place the player in the middle
+            // of the first room
+            PlacePlayer();
+
+            // Now that the player is placed, place the monsters!
+            PlaceMonsters();
+
+            return _map;
+        }
+
+        /// <summary>
         /// Generate a new map that places rooms randomly
         /// </summary>
         public DungeonMap CreateMap()
@@ -296,6 +358,20 @@ namespace Consogue.Systems
             };
             _map.StairsDown = new Stairs
             {
+                X = _map.Rooms.Last().Center.X,
+                Y = _map.Rooms.Last().Center.Y,
+                IsUp = false
+            };
+        }
+        /// <summary>
+        /// Intended to be used only by CreateWorld(), because dungeons always
+        /// have a stairs up AND stairs down, so you should use CreateStairs().
+        /// </summary>
+        private void CreateDownStairs()
+        {
+            _map.StairsDown = new Stairs
+            {
+                // TODO: Make this a random point in the town perhaps?? Center of all rooms?
                 X = _map.Rooms.Last().Center.X,
                 Y = _map.Rooms.Last().Center.Y,
                 IsUp = false
