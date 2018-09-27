@@ -1,20 +1,21 @@
 ﻿using Consogue.Core;
 using RLNET;
 using RogueSharp;
+using RogueSharp.DiceNotation;
 
 namespace Consogue.Tiles
 {
-    public class Grass : Plant
+    public class Tree : Plant
     {
-        public Grass(int x, int y)
+        public Tree(int x, int y)
         {
-            Symbol = ',';
+            Symbol = Dice.Roll("1d2") > 1 ? '[' : ']';
             X = x;
             Y = y;
         }
 
         /// <summary>
-        /// Will draw grass.
+        /// Will draw the tree.
         /// </summary>
         /// <param name="console"></param>
         /// <param name="map"></param>

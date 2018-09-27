@@ -54,43 +54,25 @@ namespace Consogue.Systems
                 // As long as we aren't on the border....
                 if(cell.X != 0 && cell.Y != 0 && cell.X != _width - 1 && cell.Y != _height - 1)
                 {
-                    // Plant some grass
-                    _map.SetCellProperties(cell.X, cell.Y, true, true, false);
-                    _map.Plants.Add(new Grass(
-                        cell.X,
-                        cell.Y
-                    ));
+                    // Low percentage change to plant a tree
+                    if (Dice.Roll("1d100") < 8)
+                    {
+                        _map.SetCellProperties(cell.X, cell.Y, false, false, false);
+                        _map.Plants.Add(new Tree(
+                            cell.X,
+                            cell.Y
+                        ));
+                    }
+                    // Or plant some grass
+                    else
+                    {
+                        _map.SetCellProperties(cell.X, cell.Y, true, true, false);
+                        _map.Plants.Add(new Grass(
+                            cell.X,
+                            cell.Y
+                        ));
+                    }
                 }
-            }
-
-            // Try to place as many rooms as the specified maxRooms
-            // Note: Only using decrementing loop because of WordPress formatting
-            for (int r = _maxRooms; r > 0; r--)
-            {
-                // Determine the size and position of the room randomly
-                int roomWidth = Game.Random.Next(_roomMinSize, _roomMaxSize);
-                int roomHeight = Game.Random.Next(_roomMinSize, _roomMaxSize);
-                int roomXPosition = Game.Random.Next(0, _width - roomWidth - 1);
-                int roomYPosition = Game.Random.Next(0, _height - roomHeight - 1);
-
-                // All of our rooms can be represented as Rectangles
-                var newRoom = new Rectangle(roomXPosition, roomYPosition,
-                  roomWidth, roomHeight);
-
-                // Check to see if the room rectangle intersects with any other rooms
-                bool newRoomIntersects = _map.Rooms.Any(room => newRoom.Intersects(room));
-
-                // As long as it doesn't intersect add it to the list of rooms
-                if (!newRoomIntersects)
-                {
-                    _map.Rooms.Add(newRoom);
-                }
-            }
-            // Iterate through each room that we wanted placed
-            // and dig out the rooms.
-            foreach (Rectangle room in _map.Rooms)
-            {
-                CreateRoom(room);
             }
 
             // Now add the stairs- only down- before we add the player
@@ -98,7 +80,7 @@ namespace Consogue.Systems
 
             // Now that our rooms and hallways are done, place the player in the middle
             // of the first room
-            PlacePlayer();
+            PlacePlayerInOverworld();
 
             // Now that the player is placed, place the monsters!
             PlaceMonsters();
@@ -212,6 +194,44 @@ namespace Consogue.Systems
 
             player.X = _map.Rooms[0].Center.X;
             player.Y = _map.Rooms[0].Center.Y;
+
+            _map.AddPlayer(player);
+        }
+        /// <summary>
+        /// Doesn't rely on Rooms to place the player, but instead
+        /// places the player in the middle of the map.
+        /// </summary>
+        private void PlacePlayerInOverworld()
+        {
+            Player player = Game.Player;
+            if (player == null)
+            {
+                player = new Player();
+            }
+            // Find a walkable tile near the middle
+            int middleX = (int)_map.Width / 2;
+            int middleY = (int)_map.Height / 2;
+            // If the tile isn't walkable, try another set up
+            while (!_map.GetCell(middleX, middleY).IsWalkable)
+            {
+                if (Dice.Roll("1d2") > 1) {
+                    ++middleX;
+                }
+                else {
+                    ++middleY;
+                }
+                if (Dice.Roll("1d2") > 1)
+                {
+                    --middleX;
+                }
+                else
+                {
+                    --middleY;
+                }
+            }
+            // Place the player there now that we know it's walkable
+            player.X = middleX;
+            player.Y = middleY;
 
             _map.AddPlayer(player);
         }
@@ -375,11 +395,14 @@ namespace Consogue.Systems
         /// </summary>
         private void CreateDownStairs()
         {
+            // roll a dice for how wide the map is
+            string mapDiceWidthExpression = "1d" + (_map.Width - 1);
+            string mapDiceHeightExpression = "1d" + (_map.Height - 1);
             _map.StairsDown = new Stairs
             {
                 // TODO: Make this a random point in the town perhaps?? Center of all rooms?
-                X = _map.Rooms.Last().Center.X,
-                Y = _map.Rooms.Last().Center.Y,
+                X = Dice.Roll(mapDiceWidthExpression),
+                Y = Dice.Roll(mapDiceHeightExpression),
                 IsUp = false
             };
         }

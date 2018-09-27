@@ -80,6 +80,7 @@
     <Compile Include="Core\Colors.cs" />
     <Compile Include="Core\Monster.cs" />
     <Compile Include="Core\Player.cs" />
+    <Compile Include="Tiles\Tree.cs" />
     <Compile Include="Tiles\Grass.cs" />
     <Compile Include="Tiles\Stairs.cs" />
     <Compile Include="Interfaces\IActor.cs" />

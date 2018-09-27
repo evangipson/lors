@@ -165,8 +165,9 @@ namespace Consogue.Core
         {
             Player player = Game.Player;
 
-            player.X = Rooms[Rooms.Count - 1].Center.X;
-            player.Y = Rooms[Rooms.Count - 1].Center.Y;
+            // The player had to take some stairs to get down, right?
+            player.X = StairsDown.X;
+            player.Y = StairsDown.Y;
             UpdatePlayerFieldOfView();
         }
         /// <summary>
