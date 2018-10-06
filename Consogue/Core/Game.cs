@@ -67,7 +67,7 @@ namespace Consogue
         {
             string fontFileName = "terminal8x8.png";
             int fontSize = 8;
-            float scale = 1.5f;
+            float scale = 1.33f;
             // Establish the seed for the random number generator from the current time
             seed = (int)DateTime.UtcNow.Ticks;
             Random = new DotNetRandom(seed);
