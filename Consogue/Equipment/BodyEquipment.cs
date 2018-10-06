@@ -22,7 +22,7 @@ namespace Consogue.Equipment
             return new BodyEquipment()
             {
                 Defense = Dice.Roll("1D4"),
-                DefenseChance = Dice.Roll("2D4"),
+                DefenseChance = Dice.Roll("10D4"),
                 Name = lowLevelBase[random.Next(0, lowLevelBase.Length - 1)] + " " + lowLevelBodyItems[random.Next(0, lowLevelBodyItems.Length - 1)]
             };
         }

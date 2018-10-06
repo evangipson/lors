@@ -20,7 +20,7 @@ namespace Consogue.Equipment
             return new HandEquipment()
             {
                 Defense = Dice.Roll("1D3"),
-                DefenseChance = Dice.Roll("2D4"),
+                DefenseChance = Dice.Roll("10D4"),
                 Name = lowLevelBase[random.Next(0, lowLevelBase.Length - 1)] + " " + lowLevelHandItems[random.Next(0, lowLevelHandItems.Length - 1)]
             };
         }
