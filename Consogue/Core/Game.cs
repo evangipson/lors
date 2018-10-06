@@ -30,22 +30,40 @@ namespace Consogue
         public static IRandom Random { get; private set; }
         // Dimensions for our map
         // TODO: Move into Dimensions if accessed in another file
-        private static int maxRooms = 0;
-        private static int maxRoomWidth = 0;
-        private static int maxRoomHeight = 0;
+        private int maxRooms = 0;
+        private int maxRoomWidth = 0;
+        private int maxRoomHeight = 0;
+        // Seed for our world
+        private int seed = 0;
 
         public static void Main()
+        {
+            // Create a new game object so we get the methods
+            Game Lors = new Game();
+            Lors.InitializeRootConsole();
+            // Show the game splash screen
+            // New Game, Exit
+            // if (New Game) -> Character Creation
+            // after Character Creation
+            Lors.StartGame();
+            // if (Exit) -> Exit
+        }
+
+        /// <summary>
+        /// Initializes the root console for the game.
+        /// </summary>
+        private void InitializeRootConsole()
         {
             string fontFileName = "terminal8x8.png";
             int fontSize = 8;
             float scale = 1.5f;
             // Establish the seed for the random number generator from the current time
-            int seed = (int)DateTime.UtcNow.Ticks;
+            seed = (int)DateTime.UtcNow.Ticks;
             Random = new DotNetRandom(seed);
             // The title will appear at the top of the console window 
             // also include the seed used to generate the level as well
             // as the level itself.
-            string consoleTitle = $"L.O.R.S. - - Level {_mapLevel} - Seed {seed}"; 
+            string consoleTitle = $"L.O.R.S. - - Level {_mapLevel} - Seed {seed}";
             // Set up our RLRootConsole now that we have defaults
             console = new RLRootConsole(
                 fontFileName,
@@ -55,6 +73,15 @@ namespace Consogue
                 scale,
                 consoleTitle
             );
+        }
+
+        /// <summary>
+        /// Initializes the subconsoles for the overworld, creates
+        /// the overworld, starts some necessary Systems, then displays
+        /// an initial message to the console.
+        /// </summary>
+        private void StartGame()
+        {
             // Initialize the sub consoles that we will Blit to the root console
             // Note: mapConsole needs to be as big as the world, but we'll only render a section of it
             mapConsole = new RLConsole(Dimensions.WorldWidth, Dimensions.WorldHeight);
@@ -98,7 +125,7 @@ namespace Consogue
         /// This function will set background color and text for each subconsole
         /// so that we can verify they are in the correct positions.
         /// </summary>
-        private static void SetSubconsoleColorAndTitle()
+        private void SetSubconsoleColorAndTitle()
         {
             inventoryConsole.SetBackColor(0, 0, Dimensions.InventoryWidth, Dimensions.InventoryHeight, Colors.AlternateDarkest);
             inventoryConsole.Print(1, 1, "Inventory", Colors.TextHeading);
@@ -109,7 +136,7 @@ namespace Consogue
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void OnConsoleUpdate(object sender, UpdateEventArgs e)
+        private void OnConsoleUpdate(object sender, UpdateEventArgs e)
         {
             // Event handler for RLNET's Update event
             bool didPlayerAct = false;
@@ -186,26 +213,35 @@ namespace Consogue
                             console.Title = $"L.O.R.S. - Level {_mapLevel}";
                             didPlayerAct = true;
                         }
+                        else
+                        {
+                            MessageLog.Add("No stairs to walk down.");
+                        }
                     }
                     // User walks up stairs
                     else if (keyPress.Key == RLKey.Comma || keyPress.Key == RLKey.Keypad0)
                     {
                         if (DungeonMap.CanMoveUpToPreviousLevel())
                         {
-                            if (_mapLevel <= 1)
+                            _mapLevel -= 1;
+                            MessageLog = new MessageLog();
+                            CommandSystem = new CommandSystem();
+                            console.Title = $"L.O.R.S. - Level {_mapLevel}";
+                            DungeonMap = DungeonMaps[_mapLevel - 1];
+                            DungeonMap.PlacePlayerNearExit();
+                            DungeonMap.RescheduleExistingActors();
+                            didPlayerAct = true;
+                        }
+                        else
+                        {
+                            // if we are in the overworld...
+                            if(_mapLevel == 1)
                             {
-                                MessageLog.Add("No overworld yet! Can't escape.");
+                                MessageLog.Add("What are you gonna do? Walk to the moon?");
                             }
                             else
                             {
-                                _mapLevel -= 1;
-                                MessageLog = new MessageLog();
-                                CommandSystem = new CommandSystem();
-                                console.Title = $"L.O.R.S. - Level {_mapLevel}";
-                                DungeonMap = DungeonMaps[_mapLevel - 1];
-                                DungeonMap.PlacePlayerNearExit();
-                                DungeonMap.RescheduleExistingActors();
-                                didPlayerAct = true;
+                                MessageLog.Add("No stairs to walk up.");
                             }
                         }
                     }
@@ -228,7 +264,7 @@ namespace Consogue
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void OnConsoleRender(object sender, UpdateEventArgs e)
+        private void OnConsoleRender(object sender, UpdateEventArgs e)
         {
             // Don't bother redrawing all of the consoles if nothing has changed.
             if (_renderRequired)

@@ -336,7 +336,11 @@ namespace Consogue.Core
         public bool CanMoveDownToNextLevel()
         {
             Player player = Game.Player;
-            return StairsDown.X == player.X && StairsDown.Y == player.Y;
+            if(StairsUp != null)
+            {
+                return StairsDown.X == player.X && StairsDown.Y == player.Y;
+            }
+            return false;
         }
         /// <summary>
         /// Makes sure the Player is above upward stairs before moving up them.
@@ -345,7 +349,11 @@ namespace Consogue.Core
         public bool CanMoveUpToPreviousLevel()
         {
             Player player = Game.Player;
-            return StairsUp.X == player.X && StairsUp.Y == player.Y;
+            if (StairsUp != null)
+            {
+                return StairsUp.X == player.X && StairsUp.Y == player.Y;
+            }
+            return false;
         }
     }
 }
