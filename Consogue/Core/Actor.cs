@@ -1,4 +1,5 @@
-﻿using Consogue.Interfaces;
+﻿using Consogue.Equipment;
+using Consogue.Interfaces;
 using RLNET;
 using RogueSharp;
 using System.Collections.Generic;
@@ -20,6 +21,19 @@ namespace Consogue.Core
         private int _maxHealth;
         private string _name;
         private int _speed;
+        public Actor()
+        {
+            Head = HeadEquipment.None();
+            Body = BodyEquipment.None();
+            Hand = HandEquipment.None();
+            Feet = FeetEquipment.None();
+        }
+
+        // IActor
+        public HeadEquipment Head { get; set; }
+        public BodyEquipment Body { get; set; }
+        public HandEquipment Hand { get; set; }
+        public FeetEquipment Feet { get; set; }
 
         public int Attack
         {

@@ -75,11 +75,17 @@
     <Compile Include="Core\Actor.cs" />
     <Compile Include="Core\Dimensions.cs" />
     <Compile Include="Core\Direction.cs" />
+    <Compile Include="Core\Equipment.cs" />
     <Compile Include="Core\Gold.cs" />
     <Compile Include="Core\Item.cs" />
     <Compile Include="Core\Plant.cs" />
     <Compile Include="Core\TreasurePile.cs" />
+    <Compile Include="Equipment\BodyEquipment.cs" />
+    <Compile Include="Equipment\FeetEquipment.cs" />
+    <Compile Include="Equipment\HandEquipment.cs" />
+    <Compile Include="Equipment\HeadEquipment.cs" />
     <Compile Include="Interfaces\IAbility.cs" />
+    <Compile Include="Interfaces\IEquipment.cs" />
     <Compile Include="Interfaces\IItem.cs" />
     <Compile Include="Interfaces\ITreasure.cs" />
     <Compile Include="Items\HealingPotion.cs" />

@@ -1,4 +1,5 @@
-﻿using Consogue.Interfaces;
+﻿using Consogue.Equipment;
+using Consogue.Interfaces;
 using RLNET;
 using System.Collections.Generic;
 
@@ -57,6 +58,10 @@ namespace Consogue.Core
             {
                 DrawItem(items[i], inventoryConsole, i);
             }
+            inventoryConsole.Print(1, 3 + (items.Count * 2), $"Head: {Head.Name}", Head == HeadEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
+            inventoryConsole.Print(1, 3 + (items.Count * 2) + 2, $"Body: {Body.Name}", Body == BodyEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
+            inventoryConsole.Print(1, 3 + (items.Count * 2) + 4, $"Hand: {Hand.Name}", Hand == HandEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
+            inventoryConsole.Print(1, 3 + (items.Count * 2) + 6, $"Feet: {Feet.Name}", Feet == FeetEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
         }
         private void DrawItem(IItem item, RLConsole inventoryConsole, int position)
         {

@@ -1,4 +1,6 @@
-﻿namespace Consogue.Interfaces
+﻿using Consogue.Equipment;
+
+namespace Consogue.Interfaces
 {
     public interface IActor
     {
@@ -48,5 +50,9 @@
         /// actions in the same time as an actor with a speed of 20.
         /// </summary>
         int Speed { get; set; }
+        HeadEquipment Head { get; set; }
+        BodyEquipment Body { get; set; }
+        HandEquipment Hand { get; set; }
+        FeetEquipment Feet { get; set; }
     }
 }
