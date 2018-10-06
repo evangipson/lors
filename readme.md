@@ -1,6 +1,10 @@
 # L.O.R.S.
 L.O.R.S. is a loot heavy, open world, roguelike survival game with procedurally generated lore. It was written in C#, and based on the thorough and insanely helpful [RogueSharp tutorial](https://roguesharp.wordpress.com/2016/02/20/roguesharp-v3-tutorial-introduction-and-goals/).
 
+![A screenshot of the L.O.R.S. splash screen](https://raw.githubusercontent.com/evangipson/lors/master/Images/lors-start-screen.png "A screenshot of the L.O.R.S. splash screen")
+
+![A screenshot of a newly generated L.O.R.S. overworld](https://raw.githubusercontent.com/evangipson/lors/master/Images/lors-overworld-start.png "A screenshot of a newly generated L.O.R.S. overworld")
+
 ## Basic Concept
 The concept of the game is to interact with the lore enough to uncover all of the (procedurally generated) main quests, beat them, and become the hero of the world. You will need to survive by eating, drinking, and sleeping. You will collect procedurally generated weapons and fight (sometimes unique) procedurally generated monsters.
 
