@@ -151,15 +151,33 @@ namespace Consogue
                 console.Clear();
                 // Set up the splash by placing characters on (x, y) locations
                 console.Print(
-                    (int)(console.Width * 0.5) - 4,
-                    (int)(console.Height * 0.25) - 2,
-                    "L.O.R.S.",
-                    Colors.DbSky
+                    (int)(console.Width * 0.5) - 6,
+                    (int)(console.Height * 0.25) - 4,
+                    "============",
+                    Colors.DbGrass
                 );
                 console.Print(
-                    (int)(console.Width * 0.5) - 4,
+                    (int)(console.Width * 0.5) - 6,
+                    (int)(console.Height * 0.25) - 3,
+                    "|          |",
+                    Colors.DbVegetation
+                );
+                console.Print(
+                    (int)(console.Width * 0.5) - 6,
+                    (int)(console.Height * 0.25) - 2,
+                    "| L.O.R.S. |",
+                    Colors.Text
+                );
+                console.Print(
+                    (int)(console.Width * 0.5) - 6,
+                    (int)(console.Height * 0.25) - 1,
+                    "|          |",
+                    Colors.DbVegetation
+                );
+                console.Print(
+                    (int)(console.Width * 0.5) - 6,
                     (int)(console.Height * 0.25),
-                    "========",
+                    "============",
                     Colors.DbGrass
                 );
                 console.Print(
