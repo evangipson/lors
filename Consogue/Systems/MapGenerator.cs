@@ -398,6 +398,14 @@ namespace Consogue.Systems
             // roll a dice for how wide the map is
             string mapDiceWidthExpression = "1d" + (_map.Width - 1);
             string mapDiceHeightExpression = "1d" + (_map.Height - 1);
+            int X = Dice.Roll(mapDiceWidthExpression);
+            int Y = Dice.Roll(mapDiceHeightExpression);
+            // Find a walkable cell to put the stairs
+            while (!_map.GetCell(X, Y).IsWalkable)
+            {
+                X = Dice.Roll(mapDiceWidthExpression);
+                Y = Dice.Roll(mapDiceHeightExpression);
+            }
             _map.StairsDown = new Stairs
             {
                 // TODO: Make this a random point in the town perhaps?? Center of all rooms?

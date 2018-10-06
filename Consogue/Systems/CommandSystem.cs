@@ -1,8 +1,10 @@
 ﻿using Consogue.Core;
+using Consogue.Equipment;
 using Consogue.Interfaces;
 using RLNET;
 using RogueSharp;
 using RogueSharp.DiceNotation;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Consogue.Systems
@@ -199,20 +201,25 @@ namespace Consogue.Systems
             }
             else if (defender is Monster)
             {
-                Game.MessageLog.Add($"{defender.Name} died.");
+                Game.MessageLog.Add($"{defender.Name} succubs to their wounds and dies.");
                 Game.DungeonMap.RemoveMonster((Monster)defender);
                 if(defender.Gold > 0)
                 {
                     Game.DungeonMap.AddGold(defender.X, defender.Y, defender.Gold);
-                    Game.MessageLog.Add($"Dropped {defender.Gold} gold.");
+                    Game.MessageLog.Add($"{defender.Name} dropped {defender.Gold} gold.");
                 }
                 if(defender.items.Count > 0)
                 {
                     for (int i = 0; i < defender.items.Count; i++)
                     {
                         Game.DungeonMap.AddTreasure(defender.X, defender.Y, defender.items[i] as ITreasure);
-                        Game.MessageLog.Add($"Dropped {defender.items[i].Name}.");
+                        Game.MessageLog.Add($"{defender.Name} dropped {defender.items[i].Name}.");
                     }
+                }
+                if (defender.Head.Name != "None")
+                {
+                    Game.DungeonMap.AddTreasure(defender.X, defender.Y, defender.Head as ITreasure);
+                    Game.MessageLog.Add($"{defender.Name} dropped {defender.Head.Name}.");
                 }
             }
         }
@@ -392,11 +399,23 @@ namespace Consogue.Systems
                  * if there is nothing, we'll say something. */
                 bool sawSomething = false;
                 ICell currentPlayerCell = Game.DungeonMap.GetCell(Game.Player.X, Game.Player.Y);
-                TreasurePile currentPlayerCellItem = Game.DungeonMap.GetItemAt(Game.Player.X, Game.Player.Y);
-                if (currentPlayerCellItem != null)
+                List<ITreasurePile> currentPlayerCellItems = Game.DungeonMap.GetItemsAt(Game.Player.X, Game.Player.Y);
+                if (currentPlayerCellItems != null)
                 {
-                    // PickUpTreasure is the action so meaningfully nothing
-                    Game.MessageLog.Add($"{Game.Player.Name} sees {currentPlayerCellItem.Treasure.Name}.");
+                    for(int i = 0; i < currentPlayerCellItems.Count; i++)
+                    {
+                        if(currentPlayerCellItems[i].Treasure is HeadEquipment ||
+                           currentPlayerCellItems[i].Treasure is HandEquipment ||
+                           currentPlayerCellItems[i].Treasure is FeetEquipment ||
+                           currentPlayerCellItems[i].Treasure is BodyEquipment)
+                        {
+                            Game.MessageLog.Add($"{Game.Player.Name} sees the {currentPlayerCellItems[i].Treasure.Name} (+{(currentPlayerCellItems[i].Treasure as IEquipment).Defense} defense).");
+                        }
+                        else
+                        {
+                            Game.MessageLog.Add($"{Game.Player.Name} sees {currentPlayerCellItems[i].Treasure.Name}.");
+                        }
+                    }
                     sawSomething = true;
                 }
                 for (int i = 0; i < Game.DungeonMap.Plants.Count; i++) {

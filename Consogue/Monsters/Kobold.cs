@@ -1,4 +1,5 @@
 ﻿using Consogue.Core;
+using Consogue.Equipment;
 using Consogue.Items;
 using RogueSharp.DiceNotation;
 
@@ -33,6 +34,22 @@ namespace Consogue.Monsters
             if (Dice.Roll("1D6") >= 5)
             {
                 kobold.items.Add(new HealingPotion());
+            }
+            // Give some Kobolds helmets
+            if(Dice.Roll("1D6") >= 5)
+            {
+                kobold.Head = HeadEquipment.GenerateNextLowLevel();
+            }
+            // Give some Kobolds body armor
+            if (Dice.Roll("1D6") >= 5)
+            {
+                kobold.Body = BodyEquipment.GenerateNextLowLevel();
+            }
+            // Give some Kobolds feet and hand armor rarely
+            if(Dice.Roll("1D6") > 5)
+            {
+                kobold.Feet = FeetEquipment.GenerateNextLowLevel();
+                kobold.Hand = HandEquipment.GenerateNextLowLevel();
             }
             return kobold;
         }

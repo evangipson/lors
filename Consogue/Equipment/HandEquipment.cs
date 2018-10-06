@@ -1,52 +1,27 @@
-﻿namespace Consogue.Equipment
+﻿using RogueSharp.DiceNotation;
+using System;
+
+namespace Consogue.Equipment
 {
     public class HandEquipment : Core.Equipment
     {
+        private static string[] lowLevelHandItems = new string[] {
+            "gloves",
+            "gauntlets",
+            "mittens"
+        };
         public static HandEquipment None()
         {
             return new HandEquipment { Name = "None" };
         }
-
-        public static HandEquipment Dagger()
+        private static Random random = new Random();
+        public static HandEquipment GenerateNextLowLevel()
         {
-            return new HandEquipment
+            return new HandEquipment()
             {
-                Attack = 1,
-                AttackChance = 10,
-                Name = "Dagger",
-                Speed = -2
-            };
-        }
-
-        public static HandEquipment Sword()
-        {
-            return new HandEquipment
-            {
-                Attack = 1,
-                AttackChance = 20,
-                Name = "Sword"
-            };
-        }
-
-        public static HandEquipment Axe()
-        {
-            return new HandEquipment
-            {
-                Attack = 2,
-                AttackChance = 15,
-                Name = "Axe",
-                Speed = 1
-            };
-        }
-
-        public static HandEquipment TwoHandedSword()
-        {
-            return new HandEquipment
-            {
-                Attack = 3,
-                AttackChance = 30,
-                Name = "2H Sword",
-                Speed = 3
+                Defense = Dice.Roll("1D3"),
+                DefenseChance = Dice.Roll("2D4"),
+                Name = lowLevelBase[random.Next(0, lowLevelBase.Length - 1)] + " " + lowLevelHandItems[random.Next(0, lowLevelHandItems.Length - 1)]
             };
         }
     }

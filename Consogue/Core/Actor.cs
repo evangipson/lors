@@ -39,7 +39,7 @@ namespace Consogue.Core
         {
             get
             {
-                return _attack;
+                return _attack + Head.Attack + Body.Attack + Hand.Attack + Feet.Attack;
             }
             set
             {
@@ -50,7 +50,7 @@ namespace Consogue.Core
         {
             get
             {
-                return _attackChance;
+                return _attackChance + Head.AttackChance + Body.AttackChance + Hand.AttackChance + Feet.AttackChance;
             }
             set
             {
@@ -72,7 +72,7 @@ namespace Consogue.Core
         {
             get
             {
-                return _defense;
+                return _defense + Head.Defense + Body.Defense + Hand.Defense + Feet.Defense;
             }
             set
             {
@@ -83,7 +83,7 @@ namespace Consogue.Core
         {
             get
             {
-                return _defenseChance;
+                return _defenseChance + Head.DefenseChance + Body.DefenseChance + Hand.DefenseChance + Feet.DefenseChance;
             }
             set
             {
@@ -138,7 +138,7 @@ namespace Consogue.Core
         {
             get
             {
-                return _speed;
+                return _speed + Head.Speed + Body.Speed + Hand.Speed + Feet.Speed;
             }
             set
             {

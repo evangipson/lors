@@ -1,39 +1,29 @@
-﻿namespace Consogue.Equipment
+﻿using RogueSharp.DiceNotation;
+using System;
+
+namespace Consogue.Equipment
 {
     public class BodyEquipment : Core.Equipment
     {
+        private static string[] lowLevelBodyItems = new string[] {
+            "breastplate",
+            "cuirass",
+            "armor",
+            "scarf",
+            "shirt"
+        };
         public static BodyEquipment None()
         {
             return new BodyEquipment { Name = "None" };
         }
-
-        public static BodyEquipment Leather()
+        private static Random random = new Random();
+        public static BodyEquipment GenerateNextLowLevel()
         {
             return new BodyEquipment()
             {
-                Defense = 1,
-                DefenseChance = 10,
-                Name = "Leather"
-            };
-        }
-
-        public static BodyEquipment Chain()
-        {
-            return new BodyEquipment()
-            {
-                Defense = 2,
-                DefenseChance = 5,
-                Name = "Chain"
-            };
-        }
-
-        public static BodyEquipment Plate()
-        {
-            return new BodyEquipment()
-            {
-                Defense = 2,
-                DefenseChance = 10,
-                Name = "Plate"
+                Defense = Dice.Roll("1D4"),
+                DefenseChance = Dice.Roll("2D4"),
+                Name = lowLevelBase[random.Next(0, lowLevelBase.Length - 1)] + " " + lowLevelBodyItems[random.Next(0, lowLevelBodyItems.Length - 1)]
             };
         }
     }

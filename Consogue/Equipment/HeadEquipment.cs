@@ -1,39 +1,27 @@
-﻿namespace Consogue.Equipment
+﻿using RogueSharp.DiceNotation;
+using System;
+
+namespace Consogue.Equipment
 {
     public class HeadEquipment : Core.Equipment
     {
+        private static string[] lowLevelHeadItems = new string[] {
+            "helmet",
+            "hat",
+            "mask",
+        };
         public static HeadEquipment None()
         {
             return new HeadEquipment { Name = "None" };
         }
-
-        public static HeadEquipment Leather()
+        private static Random random = new Random();
+        public static HeadEquipment GenerateNextLowLevel()
         {
             return new HeadEquipment()
             {
-                Defense = 1,
-                DefenseChance = 5,
-                Name = "Leather"
-            };
-        }
-
-        public static HeadEquipment Chain()
-        {
-            return new HeadEquipment()
-            {
-                Defense = 1,
-                DefenseChance = 10,
-                Name = "Chain"
-            };
-        }
-
-        public static HeadEquipment Plate()
-        {
-            return new HeadEquipment()
-            {
-                Defense = 1,
-                DefenseChance = 15,
-                Name = "Plate"
+                Defense = Dice.Roll("1D3"),
+                DefenseChance = Dice.Roll("2D4"),
+                Name = lowLevelBase[random.Next(0, lowLevelBase.Length - 1)] + " " + lowLevelHeadItems[random.Next(0, lowLevelHeadItems.Length - 1)]
             };
         }
     }

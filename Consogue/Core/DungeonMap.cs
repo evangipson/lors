@@ -13,7 +13,7 @@ namespace Consogue.Core
     public class DungeonMap : Map
     {
         private readonly List<Monster> monsters;
-        private readonly List<TreasurePile> treasurePiles;
+        private readonly List<ITreasurePile> treasurePiles;
         public List<Rectangle> Rooms { get; set; }
         public List<Door> Doors { get; set; }
         public List<Plant> Plants = new List<Plant>();
@@ -31,7 +31,7 @@ namespace Consogue.Core
             Game.SchedulingSystem.Clear();
             Rooms = new List<Rectangle>();
             monsters = new List<Monster>();
-            treasurePiles = new List<TreasurePile>();
+            treasurePiles = new List<ITreasurePile>();
             Doors = new List<Door>();
         }
 
@@ -64,7 +64,7 @@ namespace Consogue.Core
             StairsDown.Draw(mapConsole, this);
 
             // Draw our treasure piles
-            foreach (TreasurePile treasurePile in treasurePiles)
+            foreach (ITreasurePile treasurePile in treasurePiles)
             {
                 IDrawable drawableTreasure = treasurePile.Treasure as IDrawable;
                 drawableTreasure?.Draw(mapConsole, this);
@@ -233,7 +233,7 @@ namespace Consogue.Core
         /// <param name="treasure"></param>
         public void AddTreasure(int x, int y, ITreasure treasure)
         {
-            treasurePiles.Add(new TreasurePile(x, y, treasure));
+            treasurePiles.Add(new ITreasurePile(x, y, treasure));
         }
         /// <summary>
         /// Called by MapGenerator after we generate a new map to add the player to the map
@@ -285,9 +285,9 @@ namespace Consogue.Core
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public TreasurePile GetItemAt(int x, int y)
+        public List<ITreasurePile> GetItemsAt(int x, int y)
         {
-            return treasurePiles.FirstOrDefault(m => m.X == x && m.Y == y);
+            return treasurePiles.Where(m => m.X == x && m.Y == y).ToList();
         }
 
         /// <summary>
@@ -382,8 +382,8 @@ namespace Consogue.Core
         public bool PickUpTreasure(Actor actor, int x, int y)
         {
             bool pickedUpTreasure = false;
-            List<TreasurePile> treasureAtLocation = treasurePiles.Where(g => g.X == x && g.Y == y).ToList();
-            foreach (TreasurePile treasurePile in treasureAtLocation)
+            List<ITreasurePile> treasureAtLocation = treasurePiles.Where(g => g.X == x && g.Y == y).ToList();
+            foreach (ITreasurePile treasurePile in treasureAtLocation)
             {
                 // Treasure.PickUp() handles the MessageLog
                 if (treasurePile.Treasure.PickUp(actor))

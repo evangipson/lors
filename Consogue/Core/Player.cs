@@ -58,10 +58,43 @@ namespace Consogue.Core
             {
                 DrawItem(items[i], inventoryConsole, i);
             }
-            inventoryConsole.Print(1, 3 + (items.Count * 2), $"Head: {Head.Name}", Head == HeadEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
-            inventoryConsole.Print(1, 3 + (items.Count * 2) + 2, $"Body: {Body.Name}", Body == BodyEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
-            inventoryConsole.Print(1, 3 + (items.Count * 2) + 4, $"Hand: {Hand.Name}", Hand == HandEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
-            inventoryConsole.Print(1, 3 + (items.Count * 2) + 6, $"Feet: {Feet.Name}", Feet == FeetEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
+            if(Head.Name == "None")
+            {
+                inventoryConsole.Print(0, 3 + (items.Count * 2), $"Head: {Head.Name}", Head == HeadEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
+            }
+            else
+            {
+                inventoryConsole.Print(0, 3 + (items.Count * 2), $"Head: {Head.Name}, (+{Head.Defense} DEF)", Head == HeadEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
+            }
+            if (Body.Name == "None")
+            {
+                inventoryConsole.Print(0, 3 + (items.Count * 2) + 2, $"Body: {Body.Name}", Body == BodyEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
+            }
+            else
+            {
+                inventoryConsole.Print(0, 3 + (items.Count * 2) + 2, $"Body: {Body.Name}, (+{Head.Defense} DEF)", Body == BodyEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
+            }
+            if (Hand.Name == "None")
+            {
+                inventoryConsole.Print(0, 3 + (items.Count * 2) + 4, $"Hand: {Hand.Name}", Hand == HandEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
+            }
+            else
+            {
+                inventoryConsole.Print(0, 3 + (items.Count * 2) + 4, $"Hand: {Hand.Name}, (+{Head.Defense} DEF)", Hand == HandEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
+            }
+            if (Feet.Name == "None")
+            {
+                inventoryConsole.Print(0, 3 + (items.Count * 2) + 6, $"Feet: {Feet.Name}", Feet == FeetEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
+            }
+            else
+            {
+                inventoryConsole.Print(0, 3 + (items.Count * 2) + 6, $"Feet: {Feet.Name}, (+{Head.Defense} DEF)", Feet == FeetEquipment.None() ? Colors.DbOldStone : Colors.DbLight);
+            }
+            // Draw the controls
+            inventoryConsole.Print(0, inventoryConsole.Height - 8, "numpad/arrows: move", Colors.Text);
+            inventoryConsole.Print(0, inventoryConsole.Height - 6, "</>/,/.: use stairs", Colors.Text);
+            inventoryConsole.Print(0, inventoryConsole.Height - 4, "1-0: use items", Colors.Text);
+            inventoryConsole.Print(0, inventoryConsole.Height - 2, "L: look down, P: pick up", Colors.Text);
         }
         private void DrawItem(IItem item, RLConsole inventoryConsole, int position)
         {
