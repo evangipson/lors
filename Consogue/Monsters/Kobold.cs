@@ -1,6 +1,7 @@
 ﻿using Consogue.Core;
 using Consogue.Equipment;
 using Consogue.Items;
+using Consogue.Systems;
 using RogueSharp.DiceNotation;
 
 namespace Consogue.Monsters
@@ -26,7 +27,7 @@ namespace Consogue.Monsters
                 Gold = Dice.Roll("5D5"),
                 Health = health,
                 MaxHealth = health,
-                Name = "Kobold",
+                Name = NameGenerator.GenerateMonsterName() + ", Kobold",
                 Speed = 14,
                 Symbol = 'k'
             };

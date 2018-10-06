@@ -89,6 +89,8 @@
     <Compile Include="Interfaces\IItem.cs" />
     <Compile Include="Interfaces\ITreasure.cs" />
     <Compile Include="Items\HealingPotion.cs" />
+    <Compile Include="Systems\NameGenerator.cs" />
+    <Compile Include="Systems\Utilities.cs" />
     <Compile Include="Tiles\Door.cs" />
     <Compile Include="Core\DungeonMap.cs" />
     <Compile Include="Core\Game.cs" />

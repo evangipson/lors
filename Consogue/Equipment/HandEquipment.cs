@@ -1,11 +1,11 @@
-﻿using RogueSharp.DiceNotation;
-using System;
+﻿using Consogue.Systems;
+using RogueSharp.DiceNotation;
 
 namespace Consogue.Equipment
 {
     public class HandEquipment : Core.Equipment
     {
-        private static string[] lowLevelHandItems = new string[] {
+        private static string[] handEquipmentNames = new string[] {
             "gloves",
             "gauntlets",
             "mittens"
@@ -14,14 +14,15 @@ namespace Consogue.Equipment
         {
             return new HandEquipment { Name = "None" };
         }
-        private static Random random = new Random();
         public static HandEquipment GenerateNextLowLevel()
         {
             return new HandEquipment()
             {
                 Defense = Dice.Roll("1D3"),
                 DefenseChance = Dice.Roll("10D4"),
-                Name = lowLevelBase[random.Next(0, lowLevelBase.Length - 1)] + " " + lowLevelHandItems[random.Next(0, lowLevelHandItems.Length - 1)]
+                Name = Utilities.getRandomArrayItem(NameGenerator.lowLevelEquipmentTypes) +
+                       " " +
+                       Utilities.getRandomArrayItem(handEquipmentNames)
             };
         }
     }

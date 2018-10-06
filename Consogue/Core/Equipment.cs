@@ -12,13 +12,6 @@ namespace Consogue.Core
 {
     public class Equipment : IEquipment, ITreasure, IDrawable
     {
-        public static string[] lowLevelBase = new string[] {
-            "Leather",
-            "Chitin",
-            "Bug",
-            "Chain",
-            "Wool"
-        };
         public int Value { get; set; }
         public int Attack { get; set; }
         public int AttackChance { get; set; }

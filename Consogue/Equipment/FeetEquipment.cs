@@ -1,11 +1,11 @@
-﻿using RogueSharp.DiceNotation;
-using System;
+﻿using Consogue.Systems;
+using RogueSharp.DiceNotation;
 
 namespace Consogue.Equipment
 {
     public class FeetEquipment : Core.Equipment
     {
-        private static string[] lowLevelFeetItems = new string[] {
+        private static string[] feetEquipmentNames = new string[] {
             "greaves",
             "boots",
             "shoes",
@@ -15,14 +15,15 @@ namespace Consogue.Equipment
         {
             return new FeetEquipment { Name = "None" };
         }
-        private static Random random = new Random();
         public static FeetEquipment GenerateNextLowLevel()
         {
             return new FeetEquipment()
             {
                 Defense = Dice.Roll("1D3"),
                 DefenseChance = Dice.Roll("10D4"),
-                Name = lowLevelBase[random.Next(0, lowLevelBase.Length - 1)] + " " + lowLevelFeetItems[random.Next(0, lowLevelFeetItems.Length - 1)]
+                Name = Utilities.getRandomArrayItem(NameGenerator.lowLevelEquipmentTypes) +
+                       " " +
+                       Utilities.getRandomArrayItem(feetEquipmentNames)
             };
         }
     }
