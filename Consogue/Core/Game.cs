@@ -35,6 +35,9 @@ namespace Consogue
         private int maxRoomHeight = 0;
         // Seed for our world
         private int seed = 0;
+        // These variables are used for the Update functions
+        private bool didPlayerAct = false;
+        private RLKeyPress keyPress;
 
         public static void Main()
         {
@@ -42,11 +45,19 @@ namespace Consogue
             Game Lors = new Game();
             Lors.InitializeRootConsole();
             // Show the game splash screen
-            // New Game, Exit
-            // if (New Game) -> Character Creation
-            // after Character Creation
-            Lors.StartGame();
-            // if (Exit) -> Exit
+            Lors.ShowSplash();
+        }
+
+        /// <summary>
+        /// Displays the "LORS" splash screen
+        /// </summary>
+        private void ShowSplash()
+        {
+            // Now make our overworld listen to our custom functions
+            console.Update += OnSplashUpdate;
+            console.Render += OnSplashRender;
+            // Now begin the game loop
+            console.Run();
         }
 
         /// <summary>
@@ -108,17 +119,15 @@ namespace Consogue
             // Now that we have player AND map, we can update player FOV
             DungeonMap.UpdatePlayerFieldOfView();
             DungeonMaps.Add(DungeonMap);
-            // Now make our console listen to our custom functions
-            console.Update += OnConsoleUpdate;
-            console.Render += OnConsoleRender;
+            // Now make our overworld listen to our custom functions
+            console.Update += OnOverworldUpdate;
+            console.Render += OnOverworldRender;
             // Get the subconsoles background color and text on the screen
             SetSubconsoleColorAndTitle();
             // Create a new MessageLog and print the random seed used to generate the level
             MessageLog = new MessageLog();
             MessageLog.Add("The rogue arrives on level 1");
             MessageLog.Add($"Level created with seed '{seed}'");
-            // Now begin the game loop
-            console.Run();
         }
 
         /// <summary>
@@ -132,15 +141,85 @@ namespace Consogue
         }
 
         /// <summary>
-        /// The event handler for RLNET's Update event
+        /// The rendering engine for the splash screen.
+        /// </summary>
+        private void OnSplashRender(object sender, UpdateEventArgs e)
+        {
+            // Don't bother redrawing all of the consoles if nothing has changed.
+            if (_renderRequired)
+            {
+                console.Clear();
+                // Set up the splash by placing characters on (x, y) locations
+                console.Print(
+                    (int)(console.Width * 0.5) - 4,
+                    (int)(console.Height * 0.25) - 2,
+                    "L.O.R.S.",
+                    Colors.DbSky
+                );
+                console.Print(
+                    (int)(console.Width * 0.5) - 4,
+                    (int)(console.Height * 0.25),
+                    "========",
+                    Colors.DbGrass
+                );
+                console.Print(
+                    (int)(console.Width * 0.5) - 6,
+                    (int)(console.Height * 0.5) + 2,
+                    "N - New Game",
+                    Colors.DbSun
+                );
+                console.Print(
+                    (int)(console.Width * 0.5) - 6,
+                    (int)(console.Height * 0.5) + 4,
+                    "E - Exit Game",
+                    Colors.DbBlood
+                );
+                // Tell RLNET to draw the console that we set
+                console.Draw();
+            }
+        }
+
+        /// <summary>
+        /// Allow the player to interact with the splash screen.
+        /// </summary>
+        private void OnSplashUpdate(object sender, UpdateEventArgs e)
+        {
+            // Event handler for RLNET's Update event
+            didPlayerAct = false;
+            keyPress = console.Keyboard.GetKeyPress();
+            if (keyPress != null)
+            {
+                // User presses "N" for New Game
+                if (keyPress.Key == RLKey.N)
+                {
+                    // Remove now unneeded event handlers for console
+                    console.Update -= OnSplashUpdate;
+                    console.Render -= OnSplashRender;
+                    // Now start the game
+                    StartGame();
+                }
+                // User presses "E" to exit game
+                else if (keyPress.Key == RLKey.E)
+                {
+                    console.Close();
+                }
+            }
+            else
+            {
+                _renderRequired = true;
+            }
+        }
+
+        /// <summary>
+        /// Allow player to interact with the overworld.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnConsoleUpdate(object sender, UpdateEventArgs e)
+        private void OnOverworldUpdate(object sender, UpdateEventArgs e)
         {
             // Event handler for RLNET's Update event
-            bool didPlayerAct = false;
-            RLKeyPress keyPress = console.Keyboard.GetKeyPress();
+            didPlayerAct = false;
+            keyPress = console.Keyboard.GetKeyPress();
             if (CommandSystem.IsPlayerTurn)
             {
                 if (keyPress != null)
@@ -260,11 +339,11 @@ namespace Consogue
         }
 
         /// <summary>
-        /// The event handler for RLNET's render event.
+        /// The rendering engine for the overworld.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnConsoleRender(object sender, UpdateEventArgs e)
+        private void OnOverworldRender(object sender, UpdateEventArgs e)
         {
             // Don't bother redrawing all of the consoles if nothing has changed.
             if (_renderRequired)
