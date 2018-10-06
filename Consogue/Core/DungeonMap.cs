@@ -3,6 +3,7 @@ using Consogue.Tiles;
 using System.Collections.Generic;
 using RLNET;
 using System.Linq;
+using Consogue.Interfaces;
 
 namespace Consogue.Core
 {
@@ -12,6 +13,7 @@ namespace Consogue.Core
     public class DungeonMap : Map
     {
         private readonly List<Monster> monsters;
+        private readonly List<TreasurePile> treasurePiles;
         public List<Rectangle> Rooms { get; set; }
         public List<Door> Doors { get; set; }
         public List<Plant> Plants = new List<Plant>();
@@ -29,6 +31,7 @@ namespace Consogue.Core
             Game.SchedulingSystem.Clear();
             Rooms = new List<Rectangle>();
             monsters = new List<Monster>();
+            treasurePiles = new List<TreasurePile>();
             Doors = new List<Door>();
         }
 
@@ -59,6 +62,13 @@ namespace Consogue.Core
                 StairsUp.Draw(mapConsole, this);
             }
             StairsDown.Draw(mapConsole, this);
+
+            // Draw our treasure piles
+            foreach (TreasurePile treasurePile in treasurePiles)
+            {
+                IDrawable drawableTreasure = treasurePile.Treasure as IDrawable;
+                drawableTreasure?.Draw(mapConsole, this);
+            }
 
             // Keep an index so we know which position to draw monster stats at
             int i = 0;
@@ -216,6 +226,16 @@ namespace Consogue.Core
             );
         }
         /// <summary>
+        /// Adds a treasure to the overworld's treasure piles.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="treasure"></param>
+        public void AddTreasure(int x, int y, ITreasure treasure)
+        {
+            treasurePiles.Add(new TreasurePile(x, y, treasure));
+        }
+        /// <summary>
         /// Called by MapGenerator after we generate a new map to add the player to the map
         /// </summary>
         public void AddPlayer(Player player)
@@ -257,6 +277,17 @@ namespace Consogue.Core
         public Monster GetMonsterAt(int x, int y)
         {
             return monsters.FirstOrDefault(m => m.X == x && m.Y == y);
+        }
+
+        /// <summary>
+        /// Gets an item by an x, y position.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public TreasurePile GetItemAt(int x, int y)
+        {
+            return treasurePiles.FirstOrDefault(m => m.X == x && m.Y == y);
         }
 
         /// <summary>
@@ -330,13 +361,47 @@ namespace Consogue.Core
             }
         }
         /// <summary>
+        /// Adds gold to the overworld's treasures.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="amount"></param>
+        public void AddGold(int x, int y, int amount)
+        {
+            if (amount > 0)
+            {
+                AddTreasure(x, y, new Gold(amount));
+            }
+        }
+        /// <summary>
+        /// Allows an actor to pick up a treasure from the overworld.
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public bool PickUpTreasure(Actor actor, int x, int y)
+        {
+            bool pickedUpTreasure = false;
+            List<TreasurePile> treasureAtLocation = treasurePiles.Where(g => g.X == x && g.Y == y).ToList();
+            foreach (TreasurePile treasurePile in treasureAtLocation)
+            {
+                // Treasure.PickUp() handles the MessageLog
+                if (treasurePile.Treasure.PickUp(actor))
+                {
+                    treasurePiles.Remove(treasurePile);
+                    pickedUpTreasure = true;
+                }
+            }
+            return pickedUpTreasure;
+        }
+        /// <summary>
         /// Makes sure the Player is above stairs before moving down them.
         /// </summary>
         /// <returns></returns>
         public bool CanMoveDownToNextLevel()
         {
             Player player = Game.Player;
-            if(StairsUp != null)
+            if(StairsDown != null)
             {
                 return StairsDown.X == player.X && StairsDown.Y == player.Y;
             }

@@ -122,22 +122,10 @@ namespace Consogue
             // Now make our overworld listen to our custom functions
             console.Update += OnOverworldUpdate;
             console.Render += OnOverworldRender;
-            // Get the subconsoles background color and text on the screen
-            SetSubconsoleColorAndTitle();
             // Create a new MessageLog and print the random seed used to generate the level
             MessageLog = new MessageLog();
             MessageLog.Add("The rogue arrives on level 1");
             MessageLog.Add($"Level created with seed '{seed}'");
-        }
-
-        /// <summary>
-        /// This function will set background color and text for each subconsole
-        /// so that we can verify they are in the correct positions.
-        /// </summary>
-        private void SetSubconsoleColorAndTitle()
-        {
-            inventoryConsole.SetBackColor(0, 0, Dimensions.InventoryWidth, Dimensions.InventoryHeight, Colors.AlternateDarkest);
-            inventoryConsole.Print(1, 1, "Inventory", Colors.TextHeading);
         }
 
         /// <summary>
@@ -342,6 +330,10 @@ namespace Consogue
                             }
                         }
                     }
+                    else
+                    {
+                        didPlayerAct = CommandSystem.HandleKey(keyPress.Key);
+                    }
                 }
                 if (didPlayerAct)
                 {
@@ -369,6 +361,7 @@ namespace Consogue
                 mapConsole.Clear();
                 statConsole.Clear();
                 messageConsole.Clear();
+                inventoryConsole.Clear();
 
                 // Draw the map
                 DungeonMap.Draw(mapConsole, statConsole);
@@ -376,6 +369,8 @@ namespace Consogue
                 Player.Draw(mapConsole, DungeonMap);
                 // After we draw our player, draw our player's stats in the stats subconsole
                 Player.DrawStats(statConsole);
+                // Draw the player's inventory
+                Player.DrawInventory(inventoryConsole);
                 // Draw our message log
                 MessageLog.Draw(messageConsole);
                 // Refocus the camera

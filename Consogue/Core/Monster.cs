@@ -1,4 +1,5 @@
 ﻿using Consogue.Behaviors;
+using Consogue.Interfaces;
 using Consogue.Systems;
 using RLNET;
 using System;

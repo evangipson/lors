@@ -1,4 +1,5 @@
 ﻿using Consogue.Core;
+using Consogue.Items;
 using RogueSharp.DiceNotation;
 
 namespace Consogue.Monsters
@@ -13,7 +14,7 @@ namespace Consogue.Monsters
         public static Kobold Create(int level)
         {
             int health = Dice.Roll("2D5");
-            return new Kobold
+            Kobold kobold = new Kobold
             {
                 Attack = Dice.Roll("1D3") + level / 3,
                 AttackChance = Dice.Roll("25D3"),
@@ -28,6 +29,12 @@ namespace Consogue.Monsters
                 Speed = 14,
                 Symbol = 'k'
             };
+            // Low chance they'll have a healing potion.
+            if (Dice.Roll("1D6") >= 5)
+            {
+                kobold.items.Add(new HealingPotion());
+            }
+            return kobold;
         }
     }
 }

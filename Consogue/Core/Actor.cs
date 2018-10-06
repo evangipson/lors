@@ -1,11 +1,14 @@
 ﻿using Consogue.Interfaces;
 using RLNET;
 using RogueSharp;
+using System.Collections.Generic;
 
 namespace Consogue.Core
 {
     public class Actor: IActor, IDrawable, IScheduleable
     {
+        // potential loot, to be set by monster which interhits this class
+        public List<IItem> items = new List<IItem>();
         // IActor implementation
         private int _attack;
         private int _attackChance;

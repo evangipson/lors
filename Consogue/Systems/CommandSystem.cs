@@ -1,5 +1,6 @@
 ﻿using Consogue.Core;
 using Consogue.Interfaces;
+using RLNET;
 using RogueSharp;
 using RogueSharp.DiceNotation;
 using System.Text;
@@ -158,7 +159,7 @@ namespace Consogue.Systems
                 }
                 else if (blocks > 0)
                 {
-                    defenseMessage.AppendFormat("The defense of {0} falls for just a moment", defender.Name);
+                    defenseMessage.AppendFormat("The defense of {0} falls for just a moment.", defender.Name);
                 }
             }
             else
@@ -176,7 +177,7 @@ namespace Consogue.Systems
             {
                 defender.Health = defender.Health - damage;
 
-                Game.MessageLog.Add($"{defender.Name} was hit for {damage} damage");
+                Game.MessageLog.Add($"{defender.Name} was hit for {damage} damage.");
 
                 if (defender.Health <= 0)
                 {
@@ -185,7 +186,7 @@ namespace Consogue.Systems
             }
             else
             {
-                Game.MessageLog.Add($"{defender.Name} blocked all damage");
+                Game.MessageLog.Add($"{defender.Name} blocked all damage.");
             }
         }
 
@@ -198,9 +199,21 @@ namespace Consogue.Systems
             }
             else if (defender is Monster)
             {
+                Game.MessageLog.Add($"{defender.Name} died.");
                 Game.DungeonMap.RemoveMonster((Monster)defender);
-
-                Game.MessageLog.Add($"{defender.Name} died and dropped {defender.Gold} gold");
+                if(defender.Gold > 0)
+                {
+                    Game.DungeonMap.AddGold(defender.X, defender.Y, defender.Gold);
+                    Game.MessageLog.Add($"Dropped {defender.Gold} gold.");
+                }
+                if(defender.items.Count > 0)
+                {
+                    for (int i = 0; i < defender.items.Count; i++)
+                    {
+                        Game.DungeonMap.AddTreasure(defender.X, defender.Y, defender.items[i] as ITreasure);
+                        Game.MessageLog.Add($"Dropped {defender.items[i].Name}.");
+                    }
+                }
             }
         }
 
@@ -247,6 +260,49 @@ namespace Consogue.Systems
                 if (Game.Player.X == cell.X && Game.Player.Y == cell.Y)
                 {
                     Attack(monster, Game.Player);
+                }
+            }
+        }
+        public bool HandleKey(RLKey key)
+        {
+            bool didUseItem = false;
+            if (key == RLKey.Number1)
+            {
+                if(Game.Player.items.Count > 0)
+                {
+                    didUseItem = Game.Player.items[0].Use();
+                }
+                else
+                {
+                    Game.MessageLog.Add("Don't have any items to use!");
+                }
+            }
+            else if (key == RLKey.P)
+            {
+                if(Game.DungeonMap.PickUpTreasure(Game.Player, Game.Player.X, Game.Player.Y)) {
+                    // PickUpTreasure is the action so meaningfully nothing
+                }
+                else
+                {
+                    Game.MessageLog.Add("Nothing to pick up.");
+                }
+            }
+
+            if (didUseItem)
+            {
+                RemoveItemsWithNoRemainingUses();
+            }
+
+            return didUseItem;
+        }
+
+        private static void RemoveItemsWithNoRemainingUses()
+        {
+            for(int i = 0; i < Game.Player.items.Count; i++)
+            {
+                if (Game.Player.items[i].RemainingUses <= 0)
+                {
+                    Game.Player.items.Remove(Game.Player.items[i]);
                 }
             }
         }
