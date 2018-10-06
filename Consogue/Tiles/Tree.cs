@@ -9,6 +9,7 @@ namespace Consogue.Tiles
     {
         public Tree(int x, int y)
         {
+            Name = "tree";
             Symbol = Dice.Roll("1d2") > 1 ? '[' : ']';
             X = x;
             Y = y;

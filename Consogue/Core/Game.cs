@@ -124,8 +124,8 @@ namespace Consogue
             console.Render += OnOverworldRender;
             // Create a new MessageLog and print the random seed used to generate the level
             MessageLog = new MessageLog();
-            MessageLog.Add("The rogue arrives on level 1");
-            MessageLog.Add($"Level created with seed '{seed}'");
+            MessageLog.Add("The rogue arrives in the lush forests of Agnoth.");
+            MessageLog.Add($"Level created with seed '{seed}'.");
         }
 
         /// <summary>

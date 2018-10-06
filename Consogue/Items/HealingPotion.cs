@@ -14,7 +14,7 @@ namespace Consogue.Items
         protected override bool UseItem()
         {
             int healAmount = 15;
-            Game.MessageLog.Add($"{Game.Player.Name} consumes a {Name} and recovers {healAmount} health");
+            Game.MessageLog.Add($"{Game.Player.Name} consumes a {Name} and recovers {healAmount} health.");
 
             Heal heal = new Heal(healAmount);
 

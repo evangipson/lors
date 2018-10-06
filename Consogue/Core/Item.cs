@@ -12,7 +12,7 @@ namespace Consogue.Core
             Color = RLColor.Yellow;
         }
 
-        public string Name { get; protected set; }
+        public string Name { get; set; }
         public int RemainingUses { get; protected set; }
 
         public bool Use()
@@ -33,7 +33,7 @@ namespace Consogue.Core
             {
                 if (player.AddItem(this))
                 {
-                    Game.MessageLog.Add($"{actor.Name} picked up {Name}");
+                    Game.MessageLog.Add($"{actor.Name} picked up {Name}.");
                     return true;
                 }
             }

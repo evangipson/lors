@@ -274,7 +274,106 @@ namespace Consogue.Systems
                 }
                 else
                 {
-                    Game.MessageLog.Add("Don't have any items to use!");
+                    Game.MessageLog.Add($"{Game.Player.Name} glances in their empty item bag.");
+                }
+            }
+            else if (key == RLKey.Number2)
+            {
+                if (Game.Player.items.Count > 1)
+                {
+                    didUseItem = Game.Player.items[1].Use();
+                }
+                else
+                {
+                    Game.MessageLog.Add($"{Game.Player.Name} glances in their empty item bag.");
+                }
+            }
+            else if (key == RLKey.Number3)
+            {
+                if (Game.Player.items.Count > 2)
+                {
+                    didUseItem = Game.Player.items[1].Use();
+                }
+                else
+                {
+                    Game.MessageLog.Add($"{Game.Player.Name} glances in their empty item bag.");
+                }
+            }
+            else if (key == RLKey.Number4)
+            {
+                if (Game.Player.items.Count > 3)
+                {
+                    didUseItem = Game.Player.items[1].Use();
+                }
+                else
+                {
+                    Game.MessageLog.Add($"{Game.Player.Name} glances in their empty item bag.");
+                }
+            }
+            else if (key == RLKey.Number5)
+            {
+                if (Game.Player.items.Count > 4)
+                {
+                    didUseItem = Game.Player.items[1].Use();
+                }
+                else
+                {
+                    Game.MessageLog.Add($"{Game.Player.Name} glances in their empty item bag.");
+                }
+            }
+            else if (key == RLKey.Number6)
+            {
+                if (Game.Player.items.Count > 5)
+                {
+                    didUseItem = Game.Player.items[1].Use();
+                }
+                else
+                {
+                    Game.MessageLog.Add($"{Game.Player.Name} glances in their empty item bag.");
+                }
+            }
+            else if (key == RLKey.Number7)
+            {
+                if (Game.Player.items.Count > 6)
+                {
+                    didUseItem = Game.Player.items[1].Use();
+                }
+                else
+                {
+                    Game.MessageLog.Add($"{Game.Player.Name} glances in their empty item bag.");
+                }
+            }
+            else if (key == RLKey.Number8)
+            {
+                if (Game.Player.items.Count > 7)
+                {
+                    didUseItem = Game.Player.items[1].Use();
+                }
+                else
+                {
+                    Game.MessageLog.Add($"{Game.Player.Name} glances in their empty item bag.");
+                }
+            }
+            else if (key == RLKey.Number9)
+            {
+                if (Game.Player.items.Count > 8)
+                {
+                    didUseItem = Game.Player.items[1].Use();
+                }
+                else
+                {
+                    Game.MessageLog.Add($"{Game.Player.Name} glances in their empty item bag.");
+                }
+            }
+            else if (key == RLKey.Number0)
+            {
+                if (Game.Player.items.Count > 9)
+                {
+                    didUseItem = Game.Player.items[1].Use();
+                }
+                else
+                {
+                    Game.MessageLog.Add($"{Game.Player.Name} glances in their empty item bag.");
                 }
             }
             else if (key == RLKey.P)
@@ -285,6 +384,56 @@ namespace Consogue.Systems
                 else
                 {
                     Game.MessageLog.Add("Nothing to pick up.");
+                }
+            }
+            else if (key == RLKey.L)
+            {
+                /* We want to make the "Look" message interesting, so even 
+                 * if there is nothing, we'll say something. */
+                bool sawSomething = false;
+                ICell currentPlayerCell = Game.DungeonMap.GetCell(Game.Player.X, Game.Player.Y);
+                TreasurePile currentPlayerCellItem = Game.DungeonMap.GetItemAt(Game.Player.X, Game.Player.Y);
+                if (currentPlayerCellItem != null)
+                {
+                    // PickUpTreasure is the action so meaningfully nothing
+                    Game.MessageLog.Add($"{Game.Player.Name} sees {currentPlayerCellItem.Treasure.Name}.");
+                    sawSomething = true;
+                }
+                for (int i = 0; i < Game.DungeonMap.Plants.Count; i++) {
+                    if (Game.DungeonMap.Plants[i].X == Game.Player.X && Game.DungeonMap.Plants[i].Y == Game.Player.Y)
+                    {
+                        Game.MessageLog.Add($"{Game.Player.Name} sees the {Game.DungeonMap.Plants[i].Name}.");
+                        sawSomething = true;
+                    }
+                }
+                for (int i = 0; i < Game.DungeonMap.Doors.Count; i++)
+                {
+                    if (Game.DungeonMap.Doors[i].X == Game.Player.X && Game.DungeonMap.Doors[i].Y == Game.Player.Y)
+                    {
+                        // We know the door is open because the tile has to be walkable
+                        Game.MessageLog.Add($"{Game.Player.Name} sees an open door.");
+                        sawSomething = true;
+                    }
+                }
+                if(Game.DungeonMap.StairsUp != null)
+                {
+                    if (Game.DungeonMap.StairsUp.X == Game.Player.X && Game.DungeonMap.StairsUp.Y == Game.Player.Y)
+                    {
+                        // We know the door is open because the tile has to be walkable
+                        Game.MessageLog.Add($"{Game.Player.Name} some stairs leading up.");
+                        sawSomething = true;
+                    }
+                }
+                if (Game.DungeonMap.StairsDown.X == Game.Player.X && Game.DungeonMap.StairsDown.Y == Game.Player.Y)
+                {
+                    // We know the door is open because the tile has to be walkable
+                    Game.MessageLog.Add($"{Game.Player.Name} some stairs leading down.");
+                    sawSomething = true;
+                }
+                if(!sawSomething)
+                {
+                    // TODO: Make this "default" message a bit more varied and interesting
+                    Game.MessageLog.Add($"{Game.Player.Name} sees nothing out of the ordinary.");
                 }
             }
 

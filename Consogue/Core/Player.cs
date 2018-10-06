@@ -63,6 +63,11 @@ namespace Consogue.Core
             int xPosition = 0;
             int yPosition = 3 + (position * 2);
             string place = (position + 1).ToString();
+            if (place == "10")
+            {
+                // the player will use the "0" key because there is no "10" key
+                place = "0";
+            }
             inventoryConsole.Print(xPosition, yPosition, $"{place} - {item.Name}", Colors.DbLight);
         }
     }

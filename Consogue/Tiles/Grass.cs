@@ -8,6 +8,7 @@ namespace Consogue.Tiles
     {
         public Grass(int x, int y)
         {
+            Name = "grass";
             Symbol = ',';
             X = x;
             Y = y;

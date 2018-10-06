@@ -8,18 +8,20 @@ namespace Consogue.Core
     public class Gold : ITreasure, IDrawable
     {
         public int Amount { get; set; }
+        public string Name { get; set; }
 
         public Gold(int amount)
         {
             Amount = amount;
             Symbol = '$';
             Color = RLColor.Yellow;
+            Name = Amount + " gold";
         }
 
         public bool PickUp(IActor actor)
         {
             actor.Gold += Amount;
-            Game.MessageLog.Add($"{actor.Name} picked up {Amount} gold");
+            Game.MessageLog.Add($"{actor.Name} picked up {Amount} gold.");
             return true;
         }
 

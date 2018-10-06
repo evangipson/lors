@@ -34,7 +34,7 @@ namespace Consogue.Behaviors
                 monsterFov.ComputeFov(monster.X, monster.Y, monster.Awareness, true);
                 if (monsterFov.IsInFov(player.X, player.Y))
                 {
-                    Game.MessageLog.Add($"{monster.Name} is eager to fight {player.Name}");
+                    Game.MessageLog.Add($"{monster.Name} is eager to fight {player.Name}.");
                     monster.TurnsAlerted = 1;
                 }
             }
@@ -59,7 +59,7 @@ namespace Consogue.Behaviors
                     // The monster can see the player, but cannot find a path to him
                     // This could be due to other monsters blocking the way
                     // Add a message to the message log that the monster is waiting
-                    Game.MessageLog.Add($"{monster.Name} waits for a turn");
+                    Game.MessageLog.Add($"{monster.Name} gets distracted by something.");
                 }
 
                 // Don't forget to set the walkable status back to false
@@ -76,7 +76,7 @@ namespace Consogue.Behaviors
                     }
                     catch (NoMoreStepsException)
                     {
-                        Game.MessageLog.Add($"{monster.Name} growls in frustration");
+                        Game.MessageLog.Add($"{monster.Name} growls in frustration.");
                     }
                 }
 
