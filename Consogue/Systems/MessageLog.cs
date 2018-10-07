@@ -1,4 +1,5 @@
-﻿using RLNET;
+﻿using Consogue.Core;
+using RLNET;
 using System.Collections.Generic;
 
 namespace Consogue.Systems
@@ -29,6 +30,34 @@ namespace Consogue.Systems
             if(lines.Count > maxLines)
             {
                 lines.Dequeue();
+            }
+        }
+
+        public void AnnounceMonster(Monster monster)
+        {
+            Game.MessageLog.Add($"{monster.Name} is eager to fight {Game.Player.Name}.");
+            if (monster.Head.Name != "None" ||
+               monster.Body.Name != "None" ||
+               monster.Hand.Name != "None" ||
+               monster.Feet.Name != "None")
+            {
+                Game.MessageLog.Add($"{monster.Name} is wearing:");
+                if (monster.Head.Name != "None")
+                {
+                    Game.MessageLog.Add($"A {monster.Head.Name}, (+{monster.Head.Defense} DEF) on their head.");
+                }
+                if (monster.Body.Name != "None")
+                {
+                    Game.MessageLog.Add($"A {monster.Body.Name}, (+{monster.Body.Defense} DEF) on their body.");
+                }
+                if (monster.Hand.Name != "None")
+                {
+                    Game.MessageLog.Add($"A {monster.Hand.Name}, (+{monster.Hand.Defense} DEF) on their hands.");
+                }
+                if (monster.Feet.Name != "None")
+                {
+                    Game.MessageLog.Add($"A {monster.Feet.Name}, (+{monster.Feet.Defense} DEF) on their feet.");
+                }
             }
         }
 

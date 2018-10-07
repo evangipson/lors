@@ -94,7 +94,7 @@ namespace Consogue.Core
             inventoryConsole.Print(0, inventoryConsole.Height - 8, "numpad/arrows: move", Colors.Text);
             inventoryConsole.Print(0, inventoryConsole.Height - 6, "</>/,/.: use stairs", Colors.Text);
             inventoryConsole.Print(0, inventoryConsole.Height - 4, "1-0: use items", Colors.Text);
-            inventoryConsole.Print(0, inventoryConsole.Height - 2, "L: look down, P: pick up", Colors.Text);
+            inventoryConsole.Print(0, inventoryConsole.Height - 2, "L: look around, P: pick up", Colors.Text);
         }
         private void DrawItem(IItem item, RLConsole inventoryConsole, int position)
         {

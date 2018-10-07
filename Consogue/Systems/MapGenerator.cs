@@ -55,7 +55,7 @@ namespace Consogue.Systems
                 if(cell.X != 0 && cell.Y != 0 && cell.X != _width - 1 && cell.Y != _height - 1)
                 {
                     // High percentage change to plant a tree
-                    if (Dice.Roll("1d100") > 85)
+                    if (Dice.Roll("1d100") > 92)
                     {
                         _map.SetCellProperties(cell.X, cell.Y, false, false, false);
                         _map.Plants.Add(new Tree(

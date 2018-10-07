@@ -5,6 +5,7 @@ using RLNET;
 using RogueSharp;
 using RogueSharp.DiceNotation;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Consogue.Systems
@@ -448,6 +449,17 @@ namespace Consogue.Systems
                     // We know the door is open because the tile has to be walkable
                     Game.MessageLog.Add($"{Game.Player.Name} some stairs leading down.");
                     sawSomething = true;
+                }
+                // The last ditch effort to see something interesting: monsters in the tiles around you
+                List<ICell> cellsAroundPlayer = Game.DungeonMap.GetBorderCellsInSquare(Game.Player.X, Game.Player.Y, 1).ToList();
+                Monster currentMonster = Game.DungeonMap.GetMonsterAt(Game.Player.X, Game.Player.Y);
+                foreach(ICell cell in cellsAroundPlayer)
+                {
+                    currentMonster = Game.DungeonMap.GetMonsterAt(cell.X, cell.Y);
+                    if(currentMonster != null)
+                    {
+                        Game.MessageLog.AnnounceMonster(currentMonster);
+                    }
                 }
                 if(!sawSomething)
                 {

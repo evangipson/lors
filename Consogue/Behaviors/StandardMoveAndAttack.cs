@@ -34,30 +34,7 @@ namespace Consogue.Behaviors
                 monsterFov.ComputeFov(monster.X, monster.Y, monster.Awareness, true);
                 if (monsterFov.IsInFov(player.X, player.Y))
                 {
-                    Game.MessageLog.Add($"{monster.Name} is eager to fight {player.Name}.");
-                    if(monster.Head.Name != "None" ||
-                       monster.Body.Name != "None" ||
-                       monster.Hand.Name != "None" ||
-                       monster.Feet.Name != "None")
-                    {
-                        Game.MessageLog.Add($"{monster.Name} is wearing:");
-                        if(monster.Head.Name != "None")
-                        {
-                            Game.MessageLog.Add($"A {monster.Head.Name}, (+{monster.Head.Defense} DEF) on their head.");
-                        }
-                        if (monster.Body.Name != "None")
-                        {
-                            Game.MessageLog.Add($"A {monster.Body.Name}, (+{monster.Body.Defense} DEF) on their body.");
-                        }
-                        if (monster.Hand.Name != "None")
-                        {
-                            Game.MessageLog.Add($"A {monster.Hand.Name}, (+{monster.Hand.Defense} DEF) on their hands.");
-                        }
-                        if (monster.Feet.Name != "None")
-                        {
-                            Game.MessageLog.Add($"A {monster.Feet.Name}, (+{monster.Feet.Defense} DEF) on their feet.");
-                        }
-                    }
+                    Game.MessageLog.AnnounceMonster(monster);
                     monster.TurnsAlerted = 1;
                 }
             }
