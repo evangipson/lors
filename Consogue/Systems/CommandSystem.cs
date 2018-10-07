@@ -1,6 +1,7 @@
 ﻿using Consogue.Core;
 using Consogue.Equipment;
 using Consogue.Interfaces;
+using Consogue.Tiles;
 using RLNET;
 using RogueSharp;
 using RogueSharp.DiceNotation;
@@ -450,15 +451,29 @@ namespace Consogue.Systems
                     Game.MessageLog.Add($"{Game.Player.Name} some stairs leading down.");
                     sawSomething = true;
                 }
-                // The last ditch effort to see something interesting: monsters in the tiles around you
+                // The last ditch effort to see something interesting: scower the tiles around the player
                 List<ICell> cellsAroundPlayer = Game.DungeonMap.GetBorderCellsInSquare(Game.Player.X, Game.Player.Y, 1).ToList();
                 Monster currentMonster = Game.DungeonMap.GetMonsterAt(Game.Player.X, Game.Player.Y);
-                foreach(ICell cell in cellsAroundPlayer)
+                List<Plant> currentPlants = Game.DungeonMap.GetPlantsAt(Game.Player.X, Game.Player.Y);
+                foreach (ICell cell in cellsAroundPlayer)
                 {
                     currentMonster = Game.DungeonMap.GetMonsterAt(cell.X, cell.Y);
-                    if(currentMonster != null)
+                    currentPlants = Game.DungeonMap.GetPlantsAt(cell.X, cell.Y);
+                    if (currentMonster != null)
                     {
                         Game.MessageLog.AnnounceMonster(currentMonster);
+                        sawSomething = true;
+                    }
+                    if (currentPlants != null)
+                    {
+                        foreach(Plant plant in currentPlants)
+                        {
+                            if (plant is Tree)
+                            {
+                                Game.MessageLog.Add($"{Game.Player.Name} sees a tree.");
+                                sawSomething = true;
+                            }
+                        }
                     }
                 }
                 if(!sawSomething)

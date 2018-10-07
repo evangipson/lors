@@ -278,6 +278,16 @@ namespace Consogue.Core
         {
             return monsters.FirstOrDefault(m => m.X == x && m.Y == y);
         }
+        /// <summary>
+        /// Gets a list of plants by an x, y position.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public List<Plant> GetPlantsAt(int x, int y)
+        {
+            return Plants.Where(m => m.X == x && m.Y == y).ToList();
+        }
 
         /// <summary>
         /// Gets an item by an x, y position.
